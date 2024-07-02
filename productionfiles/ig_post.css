@@ -1,0 +1,96 @@
+:root {
+    --bWhite : 1px solid white;
+    --fBorder : 1px solid seagreen;
+    --iborder : 1px solid teal;
+}
+.ig-make-post {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 92vh;
+    flex-direction: column;
+}
+form {
+    background-color: var(--primary);
+    width: 60%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 20px;
+    padding: 30px;
+    box-sizing: border-box;
+}
+#postFormAll div, #postFormFb div, #postFormIg div, #postFormCaroFb div, #postFormCaroIg div, #postFormCaroAll div, #postFormTxt div  {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+label {
+    font-size: 17px;
+    font-family: var(--main-font);
+    color: var(--white);
+    margin: 5px;
+}
+
+textarea {
+    width: 400px;
+    border-radius: 20px;
+    padding: 10px;
+    border: var(--iborder);
+    font-family: var(--main-font);
+    font-size: 16px;
+}
+textarea:focus {
+    outline: none;
+    border: var(--fBorder);
+}
+button {
+    padding: 10px;
+    margin-top: 15px;
+    border-radius: 10px;
+    border: var(--iborder);
+    color: var(--primary);
+    font-family: var(--main-font);
+    font-size: 16px;
+}
+button:hover {
+    border: var(--bWhite);
+    background-color: var(--iBorder);
+    color: var(--white);
+    cursor: pointer;
+}
+
+#id_caption {
+    display: inline-block;
+}
+#message {
+    color: green;
+    text-align: center;
+    font-family: var(--main-font);
+    font-size: 20px;
+    padding: 5px;
+    margin-top: 10px;
+    visibility: hidden;
+}
+.whattopost {
+    margin-bottom: 20px;
+    padding: 10px;
+}
+.whattopost a {
+    margin: 0px 5px;
+    text-decoration: none;
+    color: var(--white);
+    padding: 4px 6px;
+    border-radius: 5px;
+    font-family: var(--ubu);
+}
+.whattopost a:hover {
+    background-color: seagreen;
+}
+#story, #caro, #singPost, #text {
+    background-color: var(--primary);
+}

@@ -1,0 +1,30 @@
+{% extends 'master.html' %}
+
+{% block title%}
+    Setup
+{% endblock %}
+
+{% block content%}
+<div class="topbar">
+    <div class="usr"></div>
+    <div class="usr">
+        {% if user.is_authenticated %}
+            <span class="usrname">{{ user.username }}</span>
+        {% else %}
+            <span class="usrname">guest</span>
+        {% endif %}
+        <span class="material-symbols-outlined">face</span>
+    </div>
+</div>
+<div class="ig-make-post">
+    <form method="post" id="postFormSet">
+        {% csrf_token %}
+        {{form}}
+        <button type="submit" id="submitBtn" onclick="showHidden()">submit</button>
+    </form>
+    <div id="message">Processing ...</div>
+    <div class="signin">
+        <a href="{% url 'password_change' %}">CHANGE PASSWORD INSTEAD</a>
+    </div>
+</div>
+{% endblock %}

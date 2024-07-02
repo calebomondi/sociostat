@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Rubik:ital,wght@0,300..900;1,300..900&family=Ubuntu+Sans:ital,wght@0,100..800;1,100..800&display=swap');
+
+:root {
+    --primary: teal;
+    --white: #fff;
+    --main-font: 'Rubik';
+    --mont : 'Montserrat';
+    --nun : 'Nunito';
+    --ubu : 'Ubuntu Sans';
+}
+* {
+    box-sizing: border-box;
+}
+body {
+    background-color: var(--primary);
+    flex-direction: column;
+    position: relative;
+    justify-content: space-between;
+}
+.content, .image, .links, .link, body {
+    display: flex;
+    align-items: center;
+}
+.content, .image, .links, .link {
+    justify-content: center;
+}
+.content {
+    flex-direction: column;
+    margin: auto 0;
+}
+.image {
+    width: 80%;
+    height: 40vh;
+    margin: 15px 0;
+    padding: 10px;
+}
+.image img {
+    width: 100%;
+}
+.title {
+    font-family: var(--main-font);
+    font-size: 30px;
+    color: var(--white);
+}
+.links {
+    margin-top: 20px;
+    font-family: var(--ubu);
+    flex-direction: row;
+}
+.link {
+    margin: 0 5px;
+    background-color: var(--white);
+    padding: 15px 17px;
+    flex-direction: row;
+    border: none;
+    border: 1px solid var(--primary);
+}
+.link a {
+    text-decoration: none;
+    font-size: 20px;
+    color: var(--primary);
+}
+.link:hover {
+    background-color: var(--primary);
+    border: 1px solid var(--white);
+    color: white;
+}
+.link a:hover {
+    color: var(--white);
+}
+.setup {
+    position: absolute;
+    bottom: -200px;
+}
+p, p a {
+    font-family: var(--mont);
+    font-size: 16px;
+    color: var(--white);
+}
+p a {
+    color: yellow;
+}
+p a:hover {
+    color: chartreuse;
+}

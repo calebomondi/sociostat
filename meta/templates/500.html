@@ -1,0 +1,20 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGIN</title>
+    <link rel="stylesheet" href="{% static 'auth.css' %}">
+</head>
+<body>
+    <div class="logo">
+        <img src="{% static 'images/whiteLogo.png' %}" alt="">
+    </div>
+    <div class="mssg">
+        <h2>Sorry, there was an error with the server. Please try again later.</h2>
+        <h3>IF YOU HAVE NOT ENTERED YOUR META DETAILS PLEASE DO SO. CLICK <a href="{% url 'set-up' %}">HERE</a></h3>
+        <p><a href="{% url 'home-page' %}">GO HOME</a></p>
+    </div>
+</body>
+</html>

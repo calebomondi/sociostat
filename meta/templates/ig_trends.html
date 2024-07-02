@@ -1,0 +1,133 @@
+{% extends 'master.html' %}
+
+{% block title%}
+    IG Trends
+{% endblock %}
+
+{% block content%}
+<div class="topbar">
+    <ul class="top-links">
+        <li class="top-link" id="dashB">
+            <a href="/instagram/dashboard">Status</a>
+        </li>
+        <li class="top-link" id="viewB">
+            <a href="/instagram/views">View</a>
+        </li>
+        <li class="top-link" id="trendB">
+            <a href="/instagram/trends">Trend</a>
+        </li>
+        <li class="top-link" id="compB">
+            <a href="/instagram/comparison">Comparison</a>
+        </li>
+        <li class="top-link" id="postB">
+            <a href="/instagram/post">Post</a>
+        </li>
+    </ul>
+    <div class="usr">
+        {% if user.is_authenticated %}
+            <span class="usrname">{{ user.username }}</span>
+        {% else %}
+            <span class="usrname">guest</span>
+        {% endif %}
+        <span class="material-symbols-outlined">face</span>
+    </div>
+</div>
+<div class="ig-show-trends">
+    <div class="linegraphs">
+        <div class="lg" id="lgCont">
+            <div class="lgtititle">Posts Performance</div>
+            <canvas id="myChart"></canvas>
+        </div>
+        <div class="lg">
+            <div class="lgtititle">Reach Comparison</div>
+            <canvas id="myChart2"></canvas>
+        </div>
+    </div>
+    <div class="trendstat">
+        <div class="trendcont">
+            <div class="trtitle">Like Rate</div>
+            <div class="trc">{{data.likeR.likeR1}}</div>
+            <div class="trp">{{data.likeR.likeR2}}</div>
+            <div class="change">
+                {% if data.likeR.likeRC > 0 %}
+                    <span class="pos">+{{data.likeR.likeRC}}</span> <i class="fa-solid fa-arrow-up"></i>
+                {% elif data.likeR.likeRC == 0 %}
+                    <span class="zero">{{data.likeR.likeRC}}</span> 
+                {% else %}
+                    <span class="neg">{{data.likeR.likeRC}}</span> <i class="fa-solid fa-arrow-down"></i>
+                {% endif %}
+            </div>
+        </div>
+        <div class="trendcont">
+            <div class="trtitle">Like Perc.</div>
+            <div class="trc">{{data.likeP.likeP1}}</div>
+            <div class="trp">{{data.likeP.likeP2}}</div>
+            <div class="change">
+                {% if data.likeP.likePC > 0 %}
+                    <span class="pos">+{{data.likeP.likePC}}</span> <i class="fa-solid fa-arrow-up"></i>
+                {% elif data.likeP.likePC == 0 %}
+                    <span class="zero">{{data.likeP.likePC}}</span>
+                {% else %}
+                    <span class="neg">{{data.likeP.likePC}}</span> <i class="fa-solid fa-arrow-down"></i>
+                {% endif %}
+            </div>
+        </div>
+        <div class="trendcont">
+            <div class="trtitle">Comment Rate</div>
+            <div class="trc">{{data.commR.commR1}}</div>
+            <div class="trp">{{data.commR.commR2}}</div>
+            <div class="change">
+                {% if data.commR.commRC > 0 %}
+                    <span class="pos">+{{data.commR.commRC}}</span> <i class="fa-solid fa-arrow-up"></i>
+                {% elif data.commR.commRC == 0 %}
+                    <span class="zero">{{data.commR.commRC}}</span>
+                {% else %}
+                    <span class="neg">{{data.commR.commRC}}</span> <i class="fa-solid fa-arrow-down"></i>
+                {% endif %}
+            </div>
+        </div>
+        <div class="trendcont">
+            <div class="trtitle">Comment Perc.</div>
+            <div class="trc">{{data.commP.commP1}}</div>
+            <div class="trp">{{data.commP.commP2}}</div>
+            <div class="change">
+                {% if data.commP.commPC > 0 %}
+                    <span class="pos">+{{data.commP.commPC}}</span> <i class="fa-solid fa-arrow-up"></i>
+                {% elif data.commP.commPC == 0 %}
+                    <span class="zero">{{data.commP.commPC}}</span>
+                {% else %}
+                    <span class="neg">{{data.commP.commPC}}</span> <i class="fa-solid fa-arrow-down"></i>
+                {% endif %}
+            </div>
+        </div>
+        <div class="trendcont">
+            <div class="trtitle">Reach Rate</div>
+            <div class="trc">{{data.reachR.reachR1}}</div>
+            <div class="trp">{{data.reachR.reachR2}}</div>
+            <div class="change">
+                {% if data.reachR.reachRC > 0 %}
+                    <span class="pos">+{{data.reachR.reachRC}}</span> <i class="fa-solid fa-arrow-up"></i>
+                {% elif data.reachR.reachRC == 0 %}
+                    <span class="zero">{{data.reachR.reachRC}}</span>
+                {% else %}
+                    <span class="neg">{{data.reachR.reachRC}}</span> <i class="fa-solid fa-arrow-down"></i>
+                {% endif %}
+            </div>
+        </div>
+        <div class="trendcont">
+            <div class="trtitle">Followers</div>
+            <div class="trc">{{flwrs.current}}</div>
+            <div class="trp">{{flwrs.past}}</div>
+            <div class="change">
+                {% if flwrs.change > 0 %}
+                    <span class="pos">+{{flwrs.change}}</span> <i class="fa-solid fa-arrow-up"></i>
+                {% elif flwrs.change == 0 %}
+                    <span class="zero">0</span>
+                {% else %}
+                    <span class="neg">{{flwrs.change}}</span> <i class="fa-solid fa-arrow-down"></i>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

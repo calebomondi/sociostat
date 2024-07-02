@@ -1,0 +1,79 @@
+{% extends 'master.html' %}
+
+{% block title%}
+    IG Views
+{% endblock %}
+
+{% block content%}
+<div class="topbar">
+    <ul class="top-links">
+        <li class="top-link" id="dashB">
+            <a href="/instagram/dashboard">Status</a>
+        </li>
+        <li class="top-link" id="viewB">
+            <a href="/instagram/views">View</a>
+        </li>
+        <li class="top-link" id="trendB">
+            <a href="/instagram/trends">Trend</a>
+        </li>
+        <li class="top-link" id="compB">
+            <a href="/instagram/comparison">Comparison</a>
+        </li>
+        <li class="top-link" id="postB">
+            <a href="/instagram/post">Post</a>
+        </li>
+    </ul>
+    <div class="usr">
+        {% if user.is_authenticated %}
+            <span class="usrname">{{ user.username }}</span>
+        {% else %}
+            <span class="usrname">guest</span>
+        {% endif %}
+        <span class="material-symbols-outlined">face</span>
+    </div>
+</div>
+<div class="ig-views">
+    <div class="vContainer">
+        <table class="ig-table">
+            <thead>
+                <tr>
+                    <th class="tpost">Posts</th>
+                    <th class="trest">Date</th>
+                    <th class="trest">Reach</th>
+                    <th class="trest">Likes</th>
+                    <th class="trest">Comments</th>
+                    <th class="trest">Shares</th>
+                    <th class="trest">Views</th>
+                    <th class="tview">View</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for post in posts %}
+                <tr>
+                    <td class="tpost">
+                        <img src={{post.imgUrl}} alt="post_image">
+                    </td>
+                    <td class="trest">{{post.date}}</td>
+                    <td class="trest">{{post.reach}}</td>
+                    <td class="trest">{{post.likes}}</td>
+                    <td class="trest">{{post.comments}}</td>
+                    <td class="trest">{{post.shares}}</td>
+                    <td class="trest">
+                        {% if post.reel == 0 %}
+                            <span>-</span>
+                        {% else %}
+                            {{post.views}}
+                        {% endif %}
+                    </td>
+                    <td class="tview">
+                        <a href={{post.postUrl}}>
+                            View
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{% static 'images/fav.png' %}" type="image/x-icon">
+    <title>Sociostats</title>
+    <link rel="stylesheet" href="{% static 'welcome.css' %}">
+    <!--icons-->
+    <script src="https://kit.fontawesome.com/85b7f6b192.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="content">
+        <div class="image">
+            <img src="{% static 'images/sslogo.png' %}" alt="">
+        </div>
+        <div class="title">
+            {% if user.is_authenticated %}
+                Welcome, {{ user.username }}
+            {% else %}
+                Social Media Dashboard
+            {% endif %}
+        </div>
+        <div class="links">
+            <div class="link">
+                <a href="/facebook/dashboard">Facebook</a>
+            </div>
+            <div class="link">
+                <a href="/instagram/dashboard">Instagram</a>
+            </div>
+        </div>
+    </div>
+    <div class="setup">
+        <p>Not yet setup account, <a href="/setup">Setup Account</a></p>
+    </div>
+</body>
+</html>

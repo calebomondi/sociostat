@@ -1,0 +1,133 @@
+{% extends 'master.html' %}
+
+{% block title%}
+    Compare IG & FB
+{% endblock %}
+
+{% block content%}
+<div class="topbar">
+    <ul class="top-links">
+        <li class="top-link" id="dashB">
+            <a href="/instagram/dashboard">Status</a>
+        </li>
+        <li class="top-link" id="viewB">
+            <a href="/instagram/views">View</a>
+        </li>
+        <li class="top-link" id="trendB">
+            <a href="/instagram/trends">Trend</a>
+        </li>
+        <li class="top-link" id="compB">
+            <a href="/instagram/comparison">Comparison</a>
+        </li>
+        <li class="top-link" id="postB">
+            <a href="/instagram/post">Post</a>
+        </li>
+    </ul>
+    <div class="usr">
+        {% if user.is_authenticated %}
+            <span class="usrname">{{ user.username }}</span>
+        {% else %}
+            <span class="usrname">guest</span>
+        {% endif %}
+        <span class="material-symbols-outlined">face</span>
+    </div>
+</div>
+<div class="ig-show-trends">
+    <div class="linegraphs">
+        <div class="lg" id="lgCont">
+            <div class="lgtititle">FB Posts Performance</div>
+            <canvas id="myChart5"></canvas>
+        </div>
+        <div class="lg">
+            <div class="lgtititle">IG Posts Performance</div>
+            <canvas id="myChart6"></canvas>
+        </div>
+    </div>
+    <div class="trendstat">
+        <div class="trendcont">
+            <div class="trtitle">Like Rate</div>
+            <div class="trC">{{fb.likeR.likeR1}}</div>
+            <div class="trP">{{ig.likeR.likeR1}}</div>
+            <div class="change">
+                {% if fb.likeR.likeR1 and ig.likeR.likeR1 %}
+                    {% with total=fb.likeR.likeR1|add:ig.likeR.likeR1 %}
+                        <span class="pos">{{ total }}</span>
+                    {% endwith %}
+                {% else %}
+                    <span class="zero">0</span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="trendcont">
+            <div class="trtitle">Like Perc.</div>
+            <div class="trC">{{fb.likeP.likeP1}}</div>
+            <div class="trP">{{ig.likeP.likeP1}}</div>
+            <div class="change">
+                {% if fb.likeP.likeP1 and ig.likeP.likeP1 %}
+                    {% with total=fb.likeP.likeP1|add:ig.likeP.likeP1 %}
+                        <span class="pos">{{ total }}</span>
+                    {% endwith %}
+                {% else %}
+                    <span class="pos">0</span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="trendcont">
+            <div class="trtitle">Comment Rate</div>
+            <div class="trC">{{fb.commR.commR1}}</div>
+            <div class="trP">{{ig.commR.commR1}}</div>
+            <div class="change">
+                {% if fb.commR.commR1 and ig.commR.commR1 %}
+                    {% with total=fb.commR.commR1|add:ig.commR.commR1 %}
+                        <span class="pos">{{ total }}</span>
+                    {% endwith %}
+                {% else %}
+                    <span class="zero">0</span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="trendcont">
+            <div class="trtitle">Comment Perc.</div>
+            <div class="trC">{{fb.commP.commP1}}</div>
+            <div class="trP">{{ig.commP.commP1}}</div>
+            <div class="change">
+                {% if fb.commP.commP1 and ig.commP.commP1 %}
+                    {% with total=fb.commP.commP1|add:ig.commP.commP1 %}
+                        <span class="pos">{{ total }}</span>
+                    {% endwith %}
+                {% else %}
+                    <span class="zero">0</span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="trendcont">
+            <div class="trtitle">Reach Rate</div>
+            <div class="trC">{{fb.reachR.reachR1}}</div>
+            <div class="trP">{{ig.reachR.reachR1}}</div>
+            <div class="change">
+                {% if fb.reachR.reachR1 and ig.reachR.reachR1 %}
+                    {% with total=fb.reachR.reachR1|add:ig.reachR.reachR1 %}
+                        <span class="pos">{{ total }}</span>
+                    {% endwith %}
+                {% else %}
+                    <span class="zero">0</span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="trendcont">
+            <div class="trtitle">Followers</div>
+            <div class="trC">{{fbFol.current}}</div>
+            <div class="trP">{{igFol.current}}</div>
+            <div class="change">
+                {% if fbFol.current and igFol.current %}
+                    {% with total=fbFol.current|add:igFol.current %}
+                        <span class="pos">{{ total }}</span>
+                    {% endwith %}
+                {% else %}
+                    <span class="zero">0</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

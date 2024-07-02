@@ -1,0 +1,128 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Rubik:ital,wght@0,300..900;1,300..900&family=Ubuntu+Sans:ital,wght@0,100..800;1,100..800&display=swap');
+
+:root {
+    --primary: #03a7a7;
+    --white: #fff;
+    --site-hover: rgb(27, 238, 119);
+    --main-font: 'Rubik';
+    --mont : 'Montserrat';
+    --nun : 'Nunito';
+    --ubu : 'Ubuntu Sans';
+    --green : green;
+    --bg : rgba(0, 0, 0, 0.4);
+}
+* {
+    box-sizing: border-box;
+}
+body {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    background-color: rgb(203, 232, 250);
+}
+.main-l {
+    flex: 2;
+    background-color: var(--primary);
+    border-radius: 0 0 20px 0;
+    position: relative;
+}
+.main-r {
+    flex: 10;
+}
+.main-l, .main-r {
+    height: 100vh;
+}
+.topbar {
+    width: 100%;
+    height: 8vh;
+    background-color: var(--white);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.top-link {
+    display: inline-block;
+    margin: 0 5px;
+    border-bottom: 2px solid var(--primary);
+    padding: 5px;
+}
+.top-link a {
+    text-decoration: none;   
+    color: var(--primary); 
+    font-weight: bold;
+    font-family: var(--ubu);
+}
+.top-link:hover {
+    background-color: var(--primary);
+}
+.top-link a:hover {
+    color: var(--white);
+}
+.usr {
+    width: 150px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.usrname {
+    font-family: var(--nun);
+    font-weight: 800;
+}
+.siteslinks, .settings {
+    flex-direction: column;
+    margin-top: 8px;
+    justify-content: center;
+}
+.sitelink {
+    font-size: 22px;
+    font-family: var(--main-font);
+    padding: 10px;
+    background-color: var(--primary);
+    text-align: center;
+}
+.sitelink:hover {
+    background-color: var(--site-hover);
+}
+.sitelink a{
+    color: var(--white);
+    text-decoration: none;
+}
+.sitelink i {
+    color: var(--white);
+    margin: 5px;
+}
+.siteslinks, .settings, .setting {
+    display: flex;
+    align-items: center;
+}
+.settings {
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 20px;
+    width: 100%;
+}
+.setting {
+    justify-content: center;
+    flex-direction: row;
+    width: 100%;
+}
+/*LOGO*/
+.img-logo, .siteslinks, .sitelink  {
+    width: 100%;
+}
+.img-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 8vh;
+    margin: 0;
+    padding: 0;
+}
+.img-logo img {
+    width: 100%;
+}
+/*Which site active*/
+#fbSite, #igSite, #setSite, #allSite {
+    border-left: 3px solid var(--white);
+}

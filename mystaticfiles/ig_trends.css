@@ -1,0 +1,106 @@
+:root {
+    --bc : whitesmoke;
+    --ig : rgb(193, 53, 132,0.2);
+}
+
+.ig-show-trends {
+    height: 92vh;
+    flex-direction: column;
+}
+.ig-show-trends, .linegraphs, .lg, .trendcont, .trp, .trc, .change, .trendstat, .trP, .trC {
+    display: flex;
+    box-sizing: border-box;
+}
+.linegraphs, .trendstat {    
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    flex-direction: row;
+}
+.trendstat {
+    background-color: var(--bc);
+    border-radius: 10px;
+    height: 46%;
+    margin: 0 0 5px 0;
+    padding: 10px;
+}
+.linegraphs {
+    height: 52%;
+    margin: 5px 0;
+}
+.lg {
+    background-color: var(--bc);
+    width: 98%;
+    height: 100%;
+    padding: 10px;
+    margin: 0 2px;
+    border-radius: 10px;
+    flex-direction: column;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+}
+.lgtititle {
+    width: 100%;
+    text-align: center;
+    font-family: var(--ubu);
+    margin: 2px 0;
+    color: var(--green);
+}
+canvas {
+    width: 100%;
+    height: 100%;
+}
+/*trnds stat container*/
+.trendcont {
+    width: 20%;
+    border: 1px solid teal;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin: 2px;
+    padding: 10px;
+    border-radius: 10px;
+    height: 90%;
+}
+.trp, .trc, .change, .trP, .trC {
+    justify-content: center;
+    align-items: center;
+    font-size: 23px;
+    width: 100%;
+    height: 25%;
+    font-family: var(--mont);
+
+}
+.trtitle {
+    font-family: var(--ubu); 
+    font-size: 23px;
+    color: var(--green);
+}
+.trp, .trc, .trP, .trC {
+    color: rgb(94, 93, 93);
+}
+.trp {
+    background-color: rgba(153, 102, 255, 0.2);
+}
+.trc {
+    background-color: rgba(75, 192, 192, 0.2);
+} 
+.trC {
+    background-color: rgba(17, 66, 224, 0.2);
+}
+.trP {
+    background-color: var(--ig);
+}
+.pos, .fa-arrow-up {
+    color: var(--green);
+} 
+.neg, .fa-arrow-down {
+    color: red;
+}
+.zero {
+    color: orange;
+}
+.fa-arrow-down, .fa-arrow-up {
+    margin-left: 3px;
+}

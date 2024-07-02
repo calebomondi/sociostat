@@ -1,0 +1,20 @@
+input {
+    width: 400px;
+    border-radius: 20px;
+    padding: 10px;
+    border: var(--iborder);
+    font-family: var(--main-font);
+    font-size: 16px;
+}
+input:focus {
+    outline: none;
+    border: var(--fBorder);
+}
+#postFormSet div {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    width: 90%;
+}

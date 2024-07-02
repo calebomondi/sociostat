@@ -1,0 +1,48 @@
+{% extends 'master.html' %}
+
+{% block title%}
+    IG Post
+{% endblock %}
+
+{% block content%}
+<div class="topbar">
+    <ul class="top-links">
+        <li class="top-link" id="dashB">
+            <a href="/instagram/dashboard">Status</a>
+        </li>
+        <li class="top-link" id="viewB">
+            <a href="/instagram/views">View</a>
+        </li>
+        <li class="top-link" id="trendB">
+            <a href="/instagram/trends">Trend</a>
+        </li>
+        <li class="top-link" id="compB">
+            <a href="/instagram/comparison">Comparison</a>
+        </li>
+        <li class="top-link" id="postB">
+            <a href="/instagram/post">Post</a>
+        </li>
+    </ul>
+    <div class="usr">
+        {% if user.is_authenticated %}
+            <span class="usrname">{{ user.username }}</span>
+        {% else %}
+            <span class="usrname">guest</span>
+        {% endif %}
+        <span class="material-symbols-outlined">face</span>
+    </div>
+</div>
+<div class="ig-make-post">
+    <div class="whattopost">
+        <a href="/instagram/post" id="singPost">Single Post</a>
+        <a href="/instagram/post/carousel" id="caro">Carousel</a>
+        <a href="/instagram/post/story" id="story">Story</a>
+    </div>
+    <form method="post" enctype="multipart/form-data" id="postFormIg">
+        {% csrf_token %}
+        {{form}}
+        <button type="submit" id="submitBtn" onclick="showHidden()">post</button>
+    </form>
+    <div id="message">Posting ...</div>
+</div>
+{% endblock %}

@@ -1,0 +1,243 @@
+{% extends 'master.html' %}
+
+{% block title%}
+    IG Dashboard
+{% endblock %}
+
+{% block content%}
+<div class="topbar">
+    <ul class="top-links">
+        <li class="top-link" id="dashB">
+            <a href="/instagram/dashboard">Status</a>
+        </li>
+        <li class="top-link" id="viewB">
+            <a href="/instagram/views">View</a>
+        </li>
+        <li class="top-link" id="trendB">
+            <a href="/instagram/trends">Trend</a>
+        </li>
+        <li class="top-link" id="compB">
+            <a href="/instagram/comparison">Comparison</a>
+        </li>
+        <li class="top-link" id="postB">
+            <a href="/instagram/post">Post</a>
+        </li>
+    </ul>
+    <div class="usr">
+        {% if user.is_authenticated %}
+            <span class="usrname">{{ user.username }}</span>
+        {% else %}
+            <span class="usrname">guest</span>
+        {% endif %}
+        <span class="material-symbols-outlined">face</span>
+    </div>
+</div>
+<div class="content-ig">
+    <div class="ig-stats">
+        <div class="title-ig">Site Monitor</div>
+        <div class="ig-stat-container">
+            <div class="ig-stat one">
+                <div class="stat-icon"><i class="fa-solid fa-person"></i></div>
+                <div class="stat-name">Followers</div>
+                <div class="stat-count">{{followers}}</div>
+            </div>
+            <div class="ig-stat two">
+                <div class="stat-icon"><i class="fa-solid fa-person"></i></div>
+                <div class="stat-name">Following</div>
+                <div class="stat-count">{{following}}</div>
+            </div>
+            <div class="ig-stat six">
+                <div class="stat-icon"><i class="fa-solid fa-signs-post"></i></div>
+                <div class="stat-name">Posts</div>
+                <div class="stat-count">{{posts}}</div>
+            </div>
+            <div class="ig-stat three">
+                <div class="stat-icon"><i class="fa-solid fa-heart"></i></div>
+                <div class="stat-name">Likes</div>
+                <div class="stat-count">{{tot_likes}}</div>
+            </div>
+            <div class="ig-stat four">
+                <div class="stat-icon"><i class="fa-solid fa-comment"></i></div>
+                <div class="stat-name">Comments</div>
+                <div class="stat-count">{{tot_comment}}</div>
+            </div>
+            <div class="ig-stat five">
+                <div class="stat-icon"><i class="fa-solid fa-share"></i></div>
+                <div class="stat-name">Shares</div>
+                <div class="stat-count">{{tot_shares}}</div>
+            </div>
+        </div>
+    </div>
+    <div class="ig-posts">
+        <div class="title-ig">Post Insights</div>
+        <div class="ig-posts-container">
+            <div class="ig-post">
+                <div class="post-title">
+                    Last 24hrs
+                </div>
+                <div class="impressions insights">
+                    <p class="iname">Impressions</p>
+                    <p class="icount">{{impressions}}</p>
+                </div>
+                <div class="reach insights">
+                    <p class="iname">Reach</p>
+                    <p class="icount">{{reach}}</p>
+                </div>
+                <div class="prof-views insights">
+                    <p class="iname">Profile Views</p>
+                    <p class="icount">{{pviews}}</p>
+                </div>
+                <div class="totInteraction insights">
+                    <p class="iname">Total Interactions</p>
+                    <p class="icount">{{interact}}</p>
+                </div>
+                <div class="likes insights">
+                    <p class="iname">Likes</p>
+                    <p class="icount">{{likes}}</p>
+                </div>
+                <div class="shares insights">
+                    <p class="iname">Shares</p>
+                    <p class="icount">{{shares}}</p>
+                </div>
+                <div class="comments insights">
+                    <p class="iname">Comments</p>
+                    <p class="icount">{{comments}}</p>
+                </div>
+                <div class="shares insights">
+                    <p class="iname">Saves</p>
+                    <p class="icount">{{saves}}</p>
+                </div>
+            </div>
+            <div class="ig-post">
+                <div class="post-title">
+                    Most Recent Post
+                </div>
+                <div class="ig-img">
+                    <a href={{recent.url.permalink}}>
+                        {% if recent.url.media_url %}
+                            <img src={{recent.url.media_url}} alt="Recent post" class="ig-image-post">
+                        {% elif recent.url.thumbnail_url %}
+                            <img src={{recent.url.thumbnail_url}} alt="Recent post" class="ig-image-post">
+                        {% endif %}
+                    </a>
+                </div>
+                <div class="ig-likes my-stats">
+                    <p class="iname">Likes</p>
+                    <p class="icount">{{recent.likes}}</p>
+                </div>
+                <div class="ig-comments my-stats">
+                    {% if recent.url.media_url %}
+                        <p class="iname">Comments</p>
+                        <p class="icount">{{recent.comments}}</p>
+                    {% elif recent.url.thumbnail_url %}
+                        <p class="iname">Shares</p>
+                        <p class="icount">{{recent.shares}}</p>
+                    {% endif %}
+                </div>
+                <div class="ig-shares my-stats">
+                    {% if recent.url.media_url %}
+                        <p class="iname">Shares</p>
+                        <p class="icount">{{recent.shares}}</p>
+                    {% elif recent.url.thumbnail_url %}
+                        <p class="iname">Views</p>
+                        <p class="icount">{{recent.views}}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="ig-post">
+                <div class="post-title">
+                    Most Commented
+                </div>
+                <div class="ig-img">
+                    <a href={{most_comments.url.permalink}}>
+                        {% if most_comments.url.media_url %}
+                            <img src={{most_comments.url.media_url}} alt="Recent post" class="ig-image-post">
+                        {% elif most_comments.url.thumbnail_url %}
+                            <img src={{most_comments.url.thumbnail_url}} alt="Recent post" class="ig-image-post">
+                        {% endif %}
+                    </a>
+                </div>
+                <div class="ig-comments my-stats">
+                    {% if most_comments.url.media_url %}
+                        <p class="iname">Comments</p>
+                        <p class="icount">{{most_comments.comments}}</p>
+                    {% elif most_comments.url.thumbnail_url %}
+                        <p class="iname">Views</p>
+                        <p class="icount">{{most_comments.views}}</p>
+                    {% endif %}
+                </div>
+                <div class="ig-likes my-stats">
+                    <p class="iname">Likes</p>
+                    <p class="icount">{{most_comments.likes}}</p>
+                </div>
+                <div class="ig-shares my-stats">
+                    <p class="iname">Shares</p>
+                    <p class="icount">{{most_comments.shares}}</p>
+                </div>
+            </div>
+            <div class="ig-post">
+                <div class="post-title">
+                    Most Liked
+                </div>
+                <div class="ig-img">
+                    <a href={{most_liked.url.permalink}}>
+                        {% if most_liked.url.media_url %}
+                            <img src={{most_liked.url.media_url}} alt="Recent post" class="ig-image-post">
+                        {% elif most_liked.url.thumbnail_url %}
+                            <img src={{most_liked.url.thumbnail_url}} alt="Recent post" class="ig-image-post">
+                        {% endif %}
+                    </a>
+                </div>
+                <div class="ig-likes my-stats">
+                    <p class="iname">Likes</p>
+                    <p class="icount">{{most_liked.likes}}</p>
+                </div>
+                <div class="ig-comments my-stats">
+                    {% if most_liked.url.media_url %}
+                        <p class="iname">Comments</p>
+                        <p class="icount">{{most_liked.comments}}</p>
+                    {% elif most_liked.url.thumbnail_url %}
+                        <p class="iname">Views</p>
+                        <p class="icount">{{most_liked.views}}</p>
+                    {% endif %}
+                </div>
+                <div class="ig-shares my-stats">
+                    <p class="iname">Shares</p>
+                    <p class="icount">{{most_liked.shares}}</p>
+                </div>
+            </div>
+            <div class="ig-post">
+                <div class="post-title">
+                    Most Shared
+                </div>
+                <div class="ig-img">
+                    <a href={{most_shared.url.permalink}}>
+                        {% if most_shared.url.media_url %}
+                            <img src={{most_shared.url.media_url}} alt="Recent post" class="ig-image-post">
+                        {% elif most_shared.url.thumbnail_url %}
+                            <img src={{most_shared.url.thumbnail_url}} alt="Recent post" class="ig-image-post">
+                        {% endif %}
+                    </a>
+                </div>
+                <div class="ig-shares my-stats">
+                    <p class="iname">Shares</p>
+                    <p class="icount">{{most_shared.shares}}</p>
+                </div>
+                <div class="ig-likes my-stats">
+                    <p class="iname">Likes</p>
+                    <p class="icount">{{most_shared.likes}}</p>
+                </div>
+                <div class="ig-comments my-stats">
+                    {% if most_shared.url.media_url %}
+                        <p class="iname">Comments</p>
+                        <p class="icount">{{most_shared.comments}}</p>
+                    {% elif most_shared.url.thumbnail_url %}
+                        <p class="iname">Views</p>
+                        <p class="icount">{{most_shared.views}}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

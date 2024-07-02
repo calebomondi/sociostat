@@ -1,0 +1,31 @@
+{% extends 'master.html' %}
+
+{% block title%}
+    Post All
+{% endblock %}
+
+{% block content%}
+<div class="topbar">
+    <div class="usr"></div>
+    <div class="usr">
+        {% if user.is_authenticated %}
+            <span class="usrname">{{ user.username }}</span>
+        {% else %}
+            <span class="usrname">guest</span>
+        {% endif %}
+        <span class="material-symbols-outlined">face</span>
+    </div>
+</div>
+<div class="ig-make-post">
+    <div class="whattopost">
+        <a href="/all/post" id="singPost">Single Post</a>
+        <a href="/all/post/carousel" id="caro">Carousel</a>
+    </div>
+    <form method="post" enctype="multipart/form-data" id="postFormAll">
+        {% csrf_token %}
+        {{form}}
+        <button type="submit" id="submitBtn" onclick="showHidden()">post</button>
+    </form>
+    <div id="message">Posting ...</div>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+.ig-views {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3px 3px 0 3px;
+}
+.vContainer {
+    width: 100%;
+}
+table {
+    width: 100%;
+}
+table, td, th {
+    border: 1px solid var(--primary);
+    border-collapse: collapse;
+}
+.tpost {
+    width: 180px;
+}
+.tview {
+    width: 70px;
+}
+.trest {
+    width: 140px;
+}
+tbody, thead {
+    display: block;
+}
+tbody {
+    height: 84vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+thead th {
+    font-size: 23px;
+}
+td, th {
+    padding: 5px;
+    font-family: var(--nun);
+    text-align: center;
+}
+.tpost img {
+    width: 100%;
+}
+td a {
+    text-decoration: none;
+    color: white;
+    padding: 5px;
+    border-radius: 10px;
+    background-color: teal;
+}
+td a:hover {
+    background-color: green;
+}
+td {
+    padding: 10px;
+    font-weight: 500;
+}

@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Rubik:ital,wght@0,300..900;1,300..900&family=Ubuntu+Sans:ital,wght@0,100..800;1,100..800&display=swap');
+
+:root {
+    --main-font: 'Rubik';
+    --mont : 'Montserrat';
+    --nun : 'Nunito';
+    --ubu : 'Ubuntu Sans';
+    --teal : teal;
+}
+
+#id_username_helptext,#id_password2_helptext, #id_password1_helptext {
+    display: none;
+}
+body, form p, form {
+    display: flex;
+    align-items: center;
+}
+form {
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+}
+form p {
+    justify-content: space-between;
+    width: 90%;
+}
+form p > label {
+    font-family: var(--main-font);
+    font-weight: 500;
+}
+form p > input {
+    border: 2px solid var(--teal);
+    width: 200px;
+    height: 5vh;
+    border-radius: 10px;
+    padding-left: 10px;
+}
+form p > input:focus {
+    border: 2px solid seagreen;
+    outline: none;
+}
+input[type='submit'] {
+    font-family: var(--main-font);
+    background-color: var(--teal);
+    padding: 10px;
+    margin: 15px 5px;
+    color: white;
+    border-radius: 10px;
+    border: none;
+}
+body {
+    justify-content: center;
+    flex-direction: column;
+}
+.form {
+    width: 40%;
+}
+.signin {
+    position: absolute;
+    bottom: 0;
+    font-family: var(--ubu);
+}
+.signin p > a {
+    color: seagreen;
+}
+.signin p > a:hover {
+    color: orangered;
+}
+.logo {
+    margin: 30px 10px;
+    width: 30%;
+}
+.logo img {
+    width: 100%;
+}
+.alert, .errorlist li {
+    color: red;
+    font-family: var(--main-font);
+}
+.errorlist {
+    list-style-type: none;
+}
+ul:not([class]) {
+    display: none;
+}

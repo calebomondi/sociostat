@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGIN</title>
+    <link rel="stylesheet" href="{% static 'auth.css' %}">
+</head>
+<body>
+    <div class="logo">
+        <img src="{% static 'images/whiteLogo.png' %}" alt="">
+    </div>
+    <div class="form">
+        <form method="post" autocomplete="off">
+            {% csrf_token %}
+            {{formLog.as_p}}
+            <input type="submit" value="Sign In">
+        </form>
+    </div>
+    <div class="error">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div class="signin">
+        <p>Don't have an account, <a href="{% url 'register' %}">Sign Up</a></p>
+    </div>
+</body>
+</html>

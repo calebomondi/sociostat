@@ -1,0 +1,114 @@
+.content-ig {
+    padding: 10px 10px 0 10px;
+}
+.ig-stats, .ig-posts {
+    border-radius: 15px;
+    background-color: var(--bg);
+}
+.ig-stats {
+    height: 30vh;
+}
+.ig-posts {
+    margin-top: 11px;
+    height: 58vh;
+}
+.ig-post {
+    width: 20%;
+    height: 50vh;
+    background-color: var(--white);
+}
+.ig-stat {
+    width: 20%;
+    height: 21vh;
+}
+.ig-stat, .ig-post {
+    border-radius: 10px;
+    margin: 3px;
+    padding: 5px;
+}
+.ig-stat-container, .ig-posts-container {
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+}
+.title-ig {
+    width: 15%;
+    font-family: var(--mont);
+    font-size: 23px;
+    font-weight:700;
+    padding: 5px 10px 5px;
+    margin: 0;
+    width: 20%;
+    height: 30px;
+    color: #fff;
+}
+.one {
+    background-color: rgb(241, 104, 104);
+}
+.two {
+    background-color: rgb(247, 131, 86);
+}
+.three {
+    background-color: rgb(90, 188, 248);
+}
+.four {
+    background-color: rgb(218, 99, 117);
+}
+.five {
+    background-color: rgb(42, 173, 99);
+}
+.six {
+    background-color: lightseagreen;
+}
+.ig-stat div {
+    margin: 3px;
+    text-align: center;
+    color: #fff;
+}
+.stat-name {
+    font-size: 26px;
+    font-weight: 700;
+    font-family: var(--nun);
+}
+.stat-count {
+    font-size: 24px;
+    font-weight: 600;
+    font-family: var(--ubu);
+}
+.insights, .my-stats{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 5vh;
+    padding: 3px;
+    color: white;
+}
+.iname, .icount {
+    color: rgb(39, 38, 38);
+}
+.iname, .post-title {
+    font-weight: 700;
+    font-family: var(--nun);
+}
+.icount {
+    font-weight: 600;
+    font-family: var(--ubu);
+}
+.post-title {
+    font-size: 20px;
+    color: green;
+    text-align: center;
+}
+.stat-icon i {
+    font-size: 30px;
+    margin: 5px;
+}
+.ig-image-post {
+    width: 100%;
+    height: 190px;
+    border-radius: 10px;
+    margin: 2px 0;
+}
+.my-stats {
+    height: 20px;
+}

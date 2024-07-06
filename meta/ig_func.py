@@ -159,6 +159,7 @@ def recentlyPosted(email):
     #metrics = 'likes,comments, shares'
     #fields = 'permalink,media_url,timestamp,thumbnail_url'
     #get media object
+    print(mediaIDS)
     recent = mediaIDS[0]['id']
     #get likes,shares,comments
     media_info = getObject(recent,igAT)
@@ -417,8 +418,6 @@ def getPostsDataTrends(email):
         final['likes2'] = likes[10:][::-1]
         final['comments2'] = comments[10:][::-1]
         final['reach2'] = reach[10:][::-1]
-
-        print(mediaIDS)
     else:
         print('NO DATA IG!')
     

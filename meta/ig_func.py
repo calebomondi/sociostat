@@ -4,8 +4,11 @@ import facebook as fb
 import urllib.parse
 from .models import UsrCredentials, Followers
 
+mediaIDS = []
+
 #DASHBOARD
 def pageInfo(email):
+    print('Inside PageInfo')
     user = UsrCredentials.objects.get(email=email)
     igAT = user.llat
     ig_user_id = user.iguserid
@@ -13,7 +16,6 @@ def pageInfo(email):
     fields = 'followers_count,follows_count,media_count'
     page_info_url = f'https://graph.facebook.com/v19.0/{ig_user_id}?fields={fields}&access_token={igAT}'
     info = requests.get(page_info_url).json()
-    print(f'info: {info}')
     return info
 
 def postInsights(email):
@@ -27,41 +29,35 @@ def postInsights(email):
     return insights
 
 def totalCLS(email):
+    print(f'totalCLS')
     user = UsrCredentials.objects.get(email=email)
     igAT = user.llat
-    ig_user_id = user.iguserid
+    #ig_user_id = user.iguserid
+    #---
+    global mediaIDS
     #---
     metrics = 'likes, comments, shares'
     likes = 0
     comments = 0
     shares = 0
-    
     #get media objects
-    url = f'https://graph.facebook.com/v19.0/{ig_user_id}/media?access_token={igAT}&limit=10'
-    output = requests.get(url).json()
-    if 'data' in output:
-        mediaObjArr = output['data']
-        print(f'size ig: {len(mediaObjArr)}')
-        #get single post metrics
-        for mediaObj in mediaObjArr:
-            post_likes = 0
-            post_comments = 0
-            post_shares = 0
-            #media insites
-            url_media = f'https://graph.facebook.com/{mediaObj['id']}/insights?metric={metrics}&access_token={igAT}'
-            media_info = requests.get(url_media).json()
-            for dat in media_info['data']:
-                if dat['name'] == 'likes':
-                    post_likes = dat['values'][0]['value']
-                if dat['name'] == 'comments':
-                    post_comments = dat['values'][0]['value']
-                if dat['name'] == 'shares':
-                    post_shares = dat['values'][0]['value']
-            likes += post_likes
-            comments += post_comments
-            shares += post_shares    
-    tot = {'likes': likes, 'comments':comments, 'shares':shares}
-    print(f'totalCLS: {tot}')
+    for mediaObj in mediaIDS[:10]:
+        post_likes = 0
+        post_comments = 0
+        post_shares = 0
+        #media insites
+        url_media = f'https://graph.facebook.com/{mediaObj['id']}/insights?metric={metrics}&access_token={igAT}'
+        media_info = requests.get(url_media).json()
+        for dat in media_info['data']:
+            if dat['name'] == 'likes':
+                post_likes = dat['values'][0]['value']
+            if dat['name'] == 'comments':
+                post_comments = dat['values'][0]['value']
+            if dat['name'] == 'shares':
+                post_shares = dat['values'][0]['value']
+        likes += post_likes
+        comments += post_comments
+        shares += post_shares
     return {'likes': likes, 'comments':comments, 'shares':shares}
         
 def dayInsights(email):
@@ -84,14 +80,15 @@ def dayInsights(email):
             shares = dat['total_value']['value']
         if dat['name'] == 'saves':
             saves = dat['total_value']['value']
-    ins = {'impressions':impressions,'reach':reach,'pviews':pviews,'interact':interact,'likes':likes,'comments':comments,'shares':shares,'saves':saves}
-    print(f'ins: {ins}')
     return {'impressions':impressions,'reach':reach,'pviews':pviews,'interact':interact,'likes':likes,'comments':comments,'shares':shares,'saves':saves}
 
 def most(email):
+    print('MOST')
     user = UsrCredentials.objects.get(email=email)
     igAT = user.llat
     ig_user_id = user.iguserid
+    #--
+    global mediaIDS
     #Arrays
     Likes = []
     Shares = []
@@ -103,57 +100,42 @@ def most(email):
     final = {}
     postIDs = {}
     #get media objects
-    url = f'https://graph.facebook.com/v19.0/{ig_user_id}/media?access_token={igAT}&limit=10'
-    output = requests.get(url).json()
-    if 'data' in output:
-        mediaObjArr = output['data']
-        print(len(mediaObjArr))
-        for mediaObj in mediaObjArr:
-            media_info = getObject(mediaObj['id'],igAT)
-            for dat in media_info['data']:
-                if dat['name'] == 'likes':
-                    Likes.append(dat['values'][0]['value'])
-                if dat['name'] == 'shares':
-                    Shares.append(dat['values'][0]['value'])
-                if dat['name'] == 'comments':
-                    Comments.append(dat['values'][0]['value'])
-        Likes.sort(reverse=True)
-        Comments.sort(reverse=True)
-        Shares.sort(reverse=True)
-        #get post Ids
-        for mediaObj in mediaObjArr:
-            media_info = getObject(mediaObj['id'],igAT)
-            for dat in media_info['data']:
-                if dat['name'] == 'likes':
-                    if dat['values'][0]['value'] == Likes[0]:
-                        most_likes['views'] = media_info['data'][0]['values'][0]['value']
-                        most_likes['likes'] = Likes[0]
-                        most_likes['comments'] = media_info['data'][2]['values'][0]['value']
-                        most_likes['shares'] = media_info['data'][3]['values'][0]['value']
-                        pid_likes = mediaObj['id'] 
-                        postIDs['likes'] = pid_likes
-                if dat['name'] == 'comments':
-                    if dat['values'][0]['value'] == Comments[0]:
-                        most_comm['views'] = media_info['data'][0]['values'][0]['value']
-                        most_comm['likes'] = media_info['data'][1]['values'][0]['value']
-                        most_comm['comments'] = Comments[0]
-                        most_comm['shares'] = media_info['data'][3]['values'][0]['value']
-                        pid_comments = mediaObj['id']
-                        postIDs['comments'] = pid_comments
-                if dat['name'] == 'shares':
-                    if dat['values'][0]['value'] == Shares[0]:
-                        most_shares['views'] = media_info['data'][0]['values'][0]['value']
-                        most_shares['likes'] = media_info['data'][1]['values'][0]['value']
-                        most_shares['comments'] = media_info['data'][2]['values'][0]['value']
-                        most_shares['shares'] = Shares[0]
-                        pid_shares = mediaObj['id']
-                        postIDs['shares'] = pid_shares
-        #add post url
-        most_shares['url'] = getURL(postIDs['shares'],igAT)
-        most_likes['url'] = getURL(postIDs['likes'],igAT)
-        most_comm['url'] = getURL(postIDs['comments'],igAT)
-    most = {'shared': most_shares, 'liked': most_likes, 'commented': most_comm}
-    print(f'most: {most}')
+    for mediaObj in mediaIDS[:10]:
+        media_info = getObject(mediaObj['id'],igAT)
+        for dat in media_info['data']:
+            if dat['name'] == 'likes':
+                Likes.append(dat['values'][0]['value'])
+            if dat['name'] == 'shares':
+                Shares.append(dat['values'][0]['value'])
+            if dat['name'] == 'comments':
+                Comments.append(dat['values'][0]['value'])
+    Likes.sort(reverse=True)
+    Comments.sort(reverse=True)
+    Shares.sort(reverse=True)
+    for mediaObj in mediaIDS[:10]:
+        media_info = getObject(mediaObj['id'],igAT)
+        for dat in media_info['data']:
+            if dat['name'] == 'likes':
+                if dat['values'][0]['value'] == Likes[0]:
+                    most_likes['views'] = media_info['data'][0]['values'][0]['value']
+                    most_likes['likes'] = Likes[0]
+                    most_likes['comments'] = media_info['data'][2]['values'][0]['value']
+                    most_likes['shares'] = media_info['data'][3]['values'][0]['value']
+                    most_likes['url'] = getURL(mediaObj['id'],igAT)
+            if dat['name'] == 'comments':
+                if dat['values'][0]['value'] == Comments[0]:
+                    most_comm['views'] = media_info['data'][0]['values'][0]['value']
+                    most_comm['likes'] = media_info['data'][1]['values'][0]['value']
+                    most_comm['comments'] = Comments[0]
+                    most_comm['shares'] = media_info['data'][3]['values'][0]['value']
+                    most_comm['url'] = getURL(mediaObj['id'],igAT)
+            if dat['name'] == 'shares':
+                if dat['values'][0]['value'] == Shares[0]:
+                    most_shares['views'] = media_info['data'][0]['values'][0]['value']
+                    most_shares['likes'] = media_info['data'][1]['values'][0]['value']
+                    most_shares['comments'] = media_info['data'][2]['values'][0]['value']
+                    most_shares['shares'] = Shares[0]
+                    most_shares['url'] = getURL(mediaObj['id'],igAT)
     return {'shared': most_shares, 'liked': most_likes, 'commented': most_comm}
 
 def getURL(pID,igAT):
@@ -167,23 +149,19 @@ def getObject(pID,igAT):
     return requests.get(url_media).json()
 
 def recentlyPosted(email):
+    print('RECENT')
     user = UsrCredentials.objects.get(email=email)
     igAT = user.llat
     ig_user_id = user.iguserid
-
-    metrics = 'likes,comments, shares'
-    fields = 'permalink,media_url,timestamp,thumbnail_url'
-    recent = 1
-    #get media objects
-    url = f'https://graph.facebook.com/v19.0/{ig_user_id}/media?access_token={igAT}&limi=1'
-    output = requests.get(url).json()
-    if 'data' in output:
-        mediaObjArr = output['data']
-        recent = mediaObjArr[0]['id']
-        print(recent)
+    #--
+    global mediaIDS
+    #--
+    #metrics = 'likes,comments, shares'
+    #fields = 'permalink,media_url,timestamp,thumbnail_url'
+    #get media object
+    recent = mediaIDS[0]['id']
     #get likes,shares,comments
-    url_media = f'https://graph.facebook.com/{recent}/insights?metric={metrics}&access_token={igAT}'
-    media_info = requests.get(url_media).json()
+    media_info = getObject(recent,igAT)
     for dat in media_info['data']:
         if dat['name'] == 'comments':
             post_comments = dat['values'][0]['value']
@@ -192,15 +170,12 @@ def recentlyPosted(email):
         if dat['name'] == 'shares':
             post_shares = dat['values'][0]['value']
     #post link and short code
-    url_link = f'https://graph.facebook.com/v15.0/{recent}?fields={fields}&access_token={igAT}'
-    post_url = requests.get(url_link).json()
+    post_url = getURL(recent,igAT)
 
     if 'thumbnail_url' in post_url:
         views = reelViews(recent,igAT)
         return {'url':post_url,'likes':post_likes, 'shares':post_shares, 'comments':post_comments, 'views':views}
     elif 'media_url' in post_url:
-        tot = {'url':post_url,'likes':post_likes, 'shares':post_shares, 'comments':post_comments}
-        print(f'recent: {tot}')
         return {'url':post_url,'likes':post_likes, 'shares':post_shares, 'comments':post_comments}
 
 def reelViews(id,igAT):
@@ -208,33 +183,28 @@ def reelViews(id,igAT):
     response = requests.get(url).json()
     return response['data'][0]['values'][0]['value']
 
-
 #VIEW
 def getPostsData(email):
     user = UsrCredentials.objects.get(email=email)
     igAT = user.llat
     ig_user_id = user.iguserid
     #---
+    global mediaIDS
+    #---
     metrics = 'likes,comments, shares,reach,video_views'
     fields = 'permalink,media_url,timestamp,thumbnail_url'
     data = []
     links = []
     #get media objects
-    url = f'https://graph.facebook.com/v19.0/{ig_user_id}/media?access_token={igAT}&limit=10'
-    output = requests.get(url).json()
-    if 'data' in output:
-        mediaObjArr = output['data']
-        print(f'Post Loading Size: {len(mediaObjArr)}')
-        #get single post metrics
-        for mediaObj in mediaObjArr:
-            #media insites
-            url_media = f'https://graph.facebook.com/{mediaObj['id']}/insights?metric={metrics}&access_token={igAT}'
-            media_info = requests.get(url_media).json()
-            data.append(media_info)
-            #post link and short code
-            url_link = f'https://graph.facebook.com/v15.0/{mediaObj['id']}?fields={fields}&access_token={igAT}'
-            post_url = requests.get(url_link).json()
-            links.append(post_url)
+    for mediaObj in mediaIDS[:10]:
+        #media insites
+        url_media = f'https://graph.facebook.com/{mediaObj['id']}/insights?metric={metrics}&access_token={igAT}'
+        media_info = requests.get(url_media).json()
+        data.append(media_info)
+        #post link and short code
+        url_link = f'https://graph.facebook.com/v15.0/{mediaObj['id']}?fields={fields}&access_token={igAT}'
+        post_url = requests.get(url_link).json()
+        links.append(post_url)
     
     return {'data':data,'links':links}
 
@@ -407,12 +377,16 @@ def multiFileHandlers(files,caption,email):
         print(f'del: {resp}')
     #return album id
     return carAlbId
-    
+
 #TRNDS
 def getPostsDataTrends(email):
     user = UsrCredentials.objects.get(email=email)
     igAT = user.llat
     ig_user_id = user.iguserid
+    #---
+    global mediaIDS
+    if mediaIDS != []:
+        mediaIDS = []
     #---
     metrics = 'likes,comments,reach'
     final = {}
@@ -420,15 +394,15 @@ def getPostsDataTrends(email):
     reach = []
     comments = []
     #get media objects
-    url = f'https://graph.facebook.com/v19.0/{ig_user_id}/media?access_token={igAT}&limit=40'
+    url = f'https://graph.facebook.com/v19.0/{ig_user_id}/media?access_token={igAT}&limit=20'
     response = requests.get(url).json()
     if 'data' in response:
         mediaObjArr = response['data']
+        mediaIDS = response['data']
         print(f'size trnds IG: {len(mediaObjArr)}')
         #get single post metrics
         i = 0
         for mediaObj in mediaObjArr:
-            #print(f'{i+1} : {mediaObj['id']}')
             #media insites
             url_media = f'https://graph.facebook.com/{mediaObj['id']}/insights?metric={metrics}&access_token={igAT}'
             media_info = requests.get(url_media).json()
@@ -436,18 +410,13 @@ def getPostsDataTrends(email):
             comments.append(media_info['data'][1]['values'][0]['value'])
             reach.append(media_info['data'][2]['values'][0]['value'])
             i +=1 
-        likes1 = likes[:20]
-        likes2 = likes[20:]
-        comments1 = comments[:20]
-        comments2 = comments[20:]
-        reach1 = reach[:20]
-        reach2 = reach[20:]
-        final['likes1'] = likes1[::-1]
-        final['comments1'] = comments1[::-1]
-        final['reach1'] = reach1[::-1]
-        final['likes2'] = likes2[::-1]
-        final['comments2'] = comments2[::-1]
-        final['reach2'] = reach2[::-1]
+        
+        final['likes1'] = likes[:10][::-1]
+        final['comments1'] = comments[:10][::-1]
+        final['reach1'] = reach[:10][::-1]
+        final['likes2'] = likes[10:][::-1]
+        final['comments2'] = comments[10:][::-1]
+        final['reach2'] = reach[10:][::-1]
 
     else:
         print('NO DATA IG!')
@@ -469,18 +438,18 @@ def trendData(fromApi):
     commP2 = round(commP2)
     commPC = commP1 - commP2 
     #rate
-    likeR1 = data['l1'] / 20
-    likeR2 = data['l2'] / 20
+    likeR1 = data['l1'] / 10
+    likeR2 = data['l2'] / 10
     likeR1 = round(likeR1)
     likeR2 = round(likeR2)
     likeRC = likeR1 - likeR2
-    commR1 = data['c1'] / 20
-    commR2 = data['c2'] / 20
+    commR1 = data['c1'] / 10
+    commR2 = data['c2'] / 10
     commR1 = round(commR1)
     commR2 = round(commR2)
     commRC = commR1 - commR2
-    reachR1 = data['r1'] / 20
-    reachR2 = data['r2'] / 20
+    reachR1 = data['r1'] / 10
+    reachR2 = data['r2'] / 10
     reachR1 = round(reachR1)
     reachR2 = round(reachR2)
     reachRC = reachR1 - reachR2
@@ -518,7 +487,7 @@ def trendData(fromApi):
 def totalTrend(final):
     like1 = like2 = comments1 = comments2 = reach1 = reach2 = 0
     i = 0
-    while i < 20:
+    while i < 10:
         like1 += final['likes1'][i]
         like2 += final['likes2'][i]
         comments1 += final['comments1'][i]

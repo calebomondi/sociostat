@@ -24,11 +24,24 @@ from django.contrib import messages
 #---
 final = {}
 finalFb = {}
+info = {}
 
 # Create your views here.
 @login_required(login_url='login')
 def welcome(request):
     template = loader.get_template('index.html')
+    #--
+    if request.user.is_authenticated:
+        email = request.user.email
+    else:
+        email = "Guest"
+    #--
+    global final,finalFb
+    if final:
+        final = {}
+        finalFb = {}
+    #--
+    final = ig_func.getPostsDataTrends(email)
     return HttpResponse(template.render())
 
 #authenticate
@@ -84,9 +97,7 @@ def password_change(request):
             messages.error(request, 'Please correct the error below.')
     else:
         form = PasswordChangeForm(request.user)
-    return render(request, 'registration/password_change_form.html', {
-        'form': form
-})
+    return render(request, 'registration/password_change_form.html', {'form': form})
 
 #FACEBOOK
 @login_required(login_url='login')
@@ -98,11 +109,12 @@ def facebook_dashboard(request):
     else:
         email = "Guest"
     #--
-    global final, finalFb
-    finalFb = fb_func.trendsCompilerFb(email)
-    final = ig_func.getPostsDataTrends(email)
+    global finalFb
+    if finalFb:
+        finalFb = {}
     #--
-    print(f'email: {email}')
+    fb_func.allPostsView(email)
+    finalFb = fb_func.trendsCompilerFb()
     most = fb_func.most(email)
     last = fb_func.last24hrs(email)
     context = {
@@ -122,7 +134,7 @@ def facebook_view(request):
         email = request.user.email
     else:
         email = "Guest"
-    viewData = fb_func.viewCompiler(email)
+    viewData = fb_func.viewCompiler()
     context = {
         'posts': viewData,
     }
@@ -218,21 +230,17 @@ def face_make_text(request):
 def instagram_dashboard(request):
     template = loader.get_template('ig_dashboard.html')
     #--
-    global final, finalFb
-    #--
     if request.user.is_authenticated:
         email = request.user.email
+        print(f'email ig: {email}')
     else:
         email = "Guest"
-    #---
-    final = ig_func.getPostsDataTrends(email)
-    finalFb = fb_func.trendsCompilerFb(email)
-    #---
+    #--
     info = ig_func.pageInfo(email)
     CLS = ig_func.totalCLS(email)
-    daily_ins = ig_func.dayInsights(email)
     most = ig_func.most(email)
     recent = ig_func.recentlyPosted(email)
+    daily_ins = ig_func.dayInsights(email)
     context = {
         'followers':info['followers_count'],
         'following':info['follows_count'],
@@ -474,13 +482,10 @@ def all_make_carousel(request):
     return JsonResponse({'message': 'Method Not Post'}, status=405)
 
 #CHARTS
-#final = ig_func.getPostsDataTrends()
-#IG
-
 class LineChartDataIg(APIView):
     def get(self, request, format=None):
         data = {
-            "labels": ['p20','p19','p18','p17','p16','p15','p14','p13','p12','p11','p10','p9','p8','p7','p6','p5','p4','p3','p2','p1'],
+            "labels": ['p10','p9','p8','p7','p6','p5','p4','p3','p2','p1'],
             "datasets": [
                 {
                     "label": "Reach",
@@ -506,17 +511,17 @@ class LineChartDataIg(APIView):
             ],
         }
         data2 = {
-            "labels": ['p20','p19','p18','p17','p16','p15','p14','p13','p12','p11','p10','p9','p8','p7','p6','p5','p4','p3','p2','p1'],
+            "labels": ['p10','p9','p8','p7','p6','p5','p4','p3','p2','p1'],
             "datasets": [
                 {
-                    "label": "current 20 posts",
+                    "label": "current 10 posts",
                     "backgroundColor": "rgba(75, 192, 192, 0.2)",
                     "borderColor": "rgba(75, 192, 192, 1)",
                     "borderWidth": 1,
                     "data": final['reach1'],
                 },
                 {
-                    "label": "previous 20 posts",
+                    "label": "previous 10 posts",
                     "backgroundColor": "rgba(153, 102, 255, 0.2)",
                     "borderColor": "rgba(153, 102, 255, 1)",
                     "borderWidth": 1,
@@ -541,20 +546,16 @@ def insta_trends(request):
     #---
     trnds = ig_func.trendData(final)
     flwrs = ig_func.followersIG(email)
-    print(f'TRNDS IG: {trnds}')
     context = {
         'data': trnds,
         'flwrs':flwrs,
     }
     return HttpResponse(template.render(context,request))
 
-#finalFb = fb_func.trendsCompilerFb()
-#FB
-
 class LineChartDataFb(APIView):
     def get(self, request, format=None):
         data3 = {
-            "labels": ['p20','p19','p18','p17','p16','p15','p14','p13','p12','p11','p10','p9','p8','p7','p6','p5','p4','p3','p2','p1'],
+            "labels": ['p10','p9','p8','p7','p6','p5','p4','p3','p2','p1'],
             "datasets": [
                 {
                     "label": "Reach",
@@ -580,17 +581,17 @@ class LineChartDataFb(APIView):
             ],
         }
         data4 = {
-            "labels": ['p20','p19','p18','p17','p16','p15','p14','p13','p12','p11','p10','p9','p8','p7','p6','p5','p4','p3','p2','p1'],
+            "labels": ['p10','p9','p8','p7','p6','p5','p4','p3','p2','p1'],
             "datasets": [
                 {
-                    "label": "current 20 posts",
+                    "label": "current 10 posts",
                     "backgroundColor": "rgba(75, 192, 192, 0.2)",
                     "borderColor": "rgba(75, 192, 192, 1)",
                     "borderWidth": 1,
                     "data": finalFb['reach1'],
                 },
                 {
-                    "label": "previous 20 posts",
+                    "label": "previous 10 posts",
                     "backgroundColor": "rgba(153, 102, 255, 0.2)",
                     "borderColor": "rgba(153, 102, 255, 1)",
                     "borderWidth": 1,
@@ -615,7 +616,6 @@ def facebook_trends(request):
     #--
     trnds = ig_func.trendData(finalFb)
     flwrs = fb_func.followersFB(email)
-    print(f'TRNDS FB: {trnds}')
     context = {
         'data': trnds,
         'flwrs':flwrs,
@@ -627,7 +627,7 @@ def facebook_trends(request):
 class LineChartDataComp(APIView):
     def get(self, request, format=None):
         data5 = {
-            "labels": ['p20','p19','p18','p17','p16','p15','p14','p13','p12','p11','p10','p9','p8','p7','p6','p5','p4','p3','p2','p1'],
+            "labels": ['p10','p9','p8','p7','p6','p5','p4','p3','p2','p1'],
             "datasets": [
                 {
                     "label": "Reach",
@@ -653,7 +653,7 @@ class LineChartDataComp(APIView):
             ]
         }
         data6 = {
-            "labels": ['p20','p19','p18','p17','p16','p15','p14','p13','p12','p11','p10','p9','p8','p7','p6','p5','p4','p3','p2','p1'],
+            "labels": ['p10','p9','p8','p7','p6','p5','p4','p3','p2','p1'],
             "datasets": [
                 {
                     "label": "Reach",
@@ -715,6 +715,11 @@ def compare_trends_ig(request):
         email = "Guest"
     #--
     global final, finalFb
+    if finalFb:
+        pass
+    else:
+        fb_func.chartsLoader(email)
+        finalFb = fb_func.trendsCompilerFb()
     #--
     fb = ig_func.trendData(finalFb)
     fbFol = fb_func.followersFB(email)
@@ -727,5 +732,3 @@ def compare_trends_ig(request):
         'igFol':igFol
     }
     return HttpResponse(template.render(context,request))
-
-

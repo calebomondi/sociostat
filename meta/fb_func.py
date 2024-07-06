@@ -5,42 +5,80 @@ import urllib.parse
 import json
 from .models import UsrCredentials, Followers
 
+likesComms = []
+reach = []
+info1 = []
+info2 = []
+
 def allPostsView(email):
-   user = UsrCredentials.objects.get(email=email)
-   page_AT = user.pgat
-   page_id = user.fbpageid
-   #---
-   pgPostIDs = []
-   info1 = []
-   info2 = []
-   fields = 'attachments,created_time,permalink_url,full_picture,likes.summary(true),comments.summary(true),shares.summary(true)'
-   #get post IDs
-   url = f'https://graph.facebook.com/v19.0/{page_id}/posts?access_token={page_AT}&limit=10'
-   res = requests.get(url).json()
-   if res:
-      postIDs = res['data']
-      for postID in postIDs:
-         pgPostIDs.append(postID['id'])
-   #get post info1
-   for id in pgPostIDs:
-      url1 = f'https://graph.facebook.com/v19.0/{id}?fields={fields}&access_token={page_AT}'
-      res1 = requests.get(url1).json()
-      info1.append(res1)
-   #get post info2
-   for id in pgPostIDs:
-      url2 = f'https://graph.facebook.com/v19.0/{id}/insights?metric=post_impressions_unique&access_token={page_AT}'
-      res2 = requests.get(url2).json()
-      info2.append(res2)
+    print('INSIDE allPostsView!')
+    #--
+    user = UsrCredentials.objects.get(email=email)
+    page_AT = user.pgat
+    page_id = user.fbpageid
+    #--
+    global likesComms,reach,info1,info2
+    if likesComms != []:
+        print('Global Not Empty!')
+        likesComms = []
+        reach = []
+        info1 = []
+        info2 = []
+    #--
+    fields = 'attachments,created_time,permalink_url,full_picture,likes.summary(true),comments.summary(true),shares.summary(true)'
+    #get post IDs
+    url = f'https://graph.facebook.com/v19.0/{page_id}/posts?access_token={page_AT}&limit=20'
+    res = requests.get(url).json()
+    if res:
+        i = 0
+        for dat in res['data']:
+            url1 = f'https://graph.facebook.com/v19.0/{dat['id']}?fields=likes.summary(true),comments.summary(true)&access_token={page_AT}'
+            res1 = requests.get(url1).json()
+            likesComms.append(res1)
+            url2 = f'https://graph.facebook.com/v19.0/{dat['id']}/insights?metric=post_impressions_unique&access_token={page_AT}'
+            res2 = requests.get(url2).json()
+            reach.append(res2)
+            if i < 10:
+                #get post info
+                url1 = f'https://graph.facebook.com/v19.0/{dat['id']}?fields={fields}&access_token={page_AT}'
+                res1 = requests.get(url1).json()
+                info1.append(res1)
+                url2 = f'https://graph.facebook.com/v19.0/{dat['id']}/insights?metric=post_impressions_unique&access_token={page_AT}'
+                res2 = requests.get(url2).json()
+                info2.append(res2)
+            i += 1
 
-   return {'info1': info1, 'info2': info2}
+def chartsLoader(email):
+    print('INSIDE chartsLoader!')
+    #--
+    user = UsrCredentials.objects.get(email=email)
+    page_AT = user.pgat
+    page_id = user.fbpageid
+    #--
+    global likesComms,reach
+    if likesComms:
+        likesComms = []
+        reach = []
+    #--
+    url = f'https://graph.facebook.com/v19.0/{page_id}/posts?access_token={page_AT}&limit=20'
+    res = requests.get(url).json()
+    if res:
+        for dat in res['data']:
+            url1 = f'https://graph.facebook.com/v19.0/{dat['id']}?fields=likes.summary(true),comments.summary(true)&access_token={page_AT}'
+            res1 = requests.get(url1).json()
+            likesComms.append(res1)
+            url2 = f'https://graph.facebook.com/v19.0/{dat['id']}/insights?metric=post_impressions_unique&access_token={page_AT}'
+            res2 = requests.get(url2).json()
+            reach.append(res2)
 
-def viewCompiler(email):
-    wData = allPostsView(email)
+def viewCompiler():
+    print('ViewCompiler')
+    global info1, info2
     cData = []
-    dat1 = wData['info1']
-    dat2 = wData['info2']
+    dat1 = info1
+    dat2 = info2
     size = len(dat1)
-    print(f'VIEW COMPILER: {size}')
+    print(f'VIEW COMPILER FB: {size}')
     i = 0
     while i < size:
         try:
@@ -133,7 +171,8 @@ def most(email):
     #return
     final = {}
     #get LCS
-    data = viewCompiler(email)
+    data = viewCompiler()
+    print('MOST')
     for dat in data:
         comments.append(dat['comments'])
         likes.append(dat['likes'])
@@ -173,40 +212,10 @@ def last24hrs(email):
     return {'pgImpress':pgImpress,'pgImpressPaid':pgImpressPaid,'pgImpressOrg':pgImpressOrg,'poImpress':poImpress,'contClicks':contClicks,'ctaCont':ctaCont,'dailyFol':dailyFol}
 
 #chart
-def getPostTrendsFb(email):
-    user = UsrCredentials.objects.get(email=email)
-    page_AT = user.pgat
-    page_id = user.fbpageid
-    #---
-    pgPostIDs = []
-    info1 = []
-    info2 = []
-    #get post IDs
-    url = f'https://graph.facebook.com/v19.0/{page_id}/posts?access_token={page_AT}&limit=40'
-    res = requests.get(url).json()
-    if 'data' in res:
-        postIDs = res['data']
-        for postID in postIDs:
-            pgPostIDs.append(postID['id'])
-    else:
-        print('NO DATA FB!')
-    #get post info1
-    for id in pgPostIDs:
-        url1 = f'https://graph.facebook.com/v19.0/{id}?fields=likes.summary(true),comments.summary(true)&access_token={page_AT}'
-        res1 = requests.get(url1).json()
-        info1.append(res1)
-    #get post info2
-    for id in pgPostIDs:
-        url2 = f'https://graph.facebook.com/v19.0/{id}/insights?metric=post_impressions_unique&access_token={page_AT}'
-        res2 = requests.get(url2).json()
-        info2.append(res2)
-
-    return {'info1': info1, 'info2': info2}
-
-def trendsCompilerFb(email):
-    wData = getPostTrendsFb(email)
-    dat1 = wData['info1']
-    dat2 = wData['info2']
+def trendsCompilerFb():
+    global likesComms, reach
+    dat1 = likesComms
+    dat2 = reach
     final = {}
     likes = []
     reach = []
@@ -220,19 +229,13 @@ def trendsCompilerFb(email):
         comments.append(dat1[i]['comments']['summary']['total_count'])
         reach.append(dat2[i]['data'][0]['values'][0]['value'])
         i += 1
-    
-    likes1 = likes[:20]
-    likes2 = likes[20:]
-    comments1 = comments[:20]
-    comments2 = comments[20:]
-    reach1 = reach[:20]
-    reach2 = reach[20:]
-    final['likes1'] = likes1[::-1]
-    final['comments1'] = comments1[::-1]
-    final['reach1'] = reach1[::-1]
-    final['likes2'] = likes2[::-1]
-    final['comments2'] = comments2[::-1]
-    final['reach2'] = reach2[::-1]
+   
+    final['likes1'] = likes[:10][::-1]
+    final['comments1'] = comments[:10][::-1]
+    final['reach1'] = reach[:10][::-1]
+    final['likes2'] = likes[10:][::-1]
+    final['comments2'] = comments[10:][::-1]
+    final['reach2'] = reach[10:][::-1]
 
     return final
 

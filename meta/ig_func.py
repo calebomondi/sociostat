@@ -418,6 +418,7 @@ def getPostsDataTrends(email):
         final['comments2'] = comments[10:][::-1]
         final['reach2'] = reach[10:][::-1]
 
+        print(mediaIDS)
     else:
         print('NO DATA IG!')
     

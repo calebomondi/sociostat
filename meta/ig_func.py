@@ -5,7 +5,6 @@ import urllib.parse
 from .models import UsrCredentials, Followers
 
 mediaIDS = []
-recent = None
 
 #DASHBOARD
 def pageInfo(email):
@@ -36,6 +35,7 @@ def totalCLS(email):
     #ig_user_id = user.iguserid
     #---
     global mediaIDS
+    print(f'mediaIDS: {mediaIDS}')
     #---
     metrics = 'likes, comments, shares'
     likes = 0
@@ -89,7 +89,7 @@ def most(email):
     igAT = user.llat
     ig_user_id = user.iguserid
     #--
-    global mediaIDS, recent
+    global mediaIDS
     #Arrays
     Likes = []
     Shares = []
@@ -100,8 +100,6 @@ def most(email):
     most_shares = {}
     final = {}
     postIDs = {}
-    #--
-    recent = mediaIDS[0]['id']
     #get media objects
     for mediaObj in mediaIDS[:10]:
         media_info = getObject(mediaObj['id'],igAT)
@@ -157,9 +155,10 @@ def recentlyPosted(email):
     igAT = user.llat
     ig_user_id = user.iguserid
     #--
-    global recent
+    global mediaIDS
     #--
-    print(recent)
+    print(mediaIDS)
+    recent = mediaIDS[0]['id']
     #get likes,shares,comments
     media_info = getObject(recent,igAT)
     for dat in media_info['data']:
@@ -399,6 +398,7 @@ def getPostsDataTrends(email):
     if 'data' in response:
         mediaObjArr = response['data']
         mediaIDS = response['data']
+        print(f'mediaIDS: {mediaIDS}')
         print(f'size trnds IG: {len(mediaObjArr)}')
         #get single post metrics
         i = 0

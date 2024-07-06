@@ -5,6 +5,7 @@ import urllib.parse
 from .models import UsrCredentials, Followers
 
 mediaIDS = []
+recent = None
 
 #DASHBOARD
 def pageInfo(email):
@@ -88,7 +89,7 @@ def most(email):
     igAT = user.llat
     ig_user_id = user.iguserid
     #--
-    global mediaIDS
+    global mediaIDS, recent
     #Arrays
     Likes = []
     Shares = []
@@ -99,6 +100,8 @@ def most(email):
     most_shares = {}
     final = {}
     postIDs = {}
+    #--
+    recent = mediaIDS[0]['id']
     #get media objects
     for mediaObj in mediaIDS[:10]:
         media_info = getObject(mediaObj['id'],igAT)
@@ -154,13 +157,9 @@ def recentlyPosted(email):
     igAT = user.llat
     ig_user_id = user.iguserid
     #--
-    global mediaIDS
+    global recent
     #--
-    #metrics = 'likes,comments, shares'
-    #fields = 'permalink,media_url,timestamp,thumbnail_url'
-    #get media object
-    print(mediaIDS)
-    recent = mediaIDS[0]['id']
+    print(recent)
     #get likes,shares,comments
     media_info = getObject(recent,igAT)
     for dat in media_info['data']:

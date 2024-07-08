@@ -156,7 +156,6 @@ def trendsCompilerFb(email):
     res = requests.get(url).json()
     if res:
         for dat in res['data']:
-            print(f'{i}')
             url1 = f'https://graph.facebook.com/v19.0/{dat['id']}?fields=likes.summary(true),comments.summary(true)&access_token={page_AT}'
             res1 = requests.get(url1).json()
             dat1.append(res1)

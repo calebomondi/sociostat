@@ -33,3 +33,14 @@
 
 #link to private policy
 #'https://www.privacypolicies.com/live/8285540f-02cf-459a-98b7-ff18bd286373'
+
+'''
+var postAll = "{% url 'all-process-form' %}";
+var postAllCaro = "{% url 'all-process-carousel' %}";
+var postFb = "{% url 'fb-process-form' %}";
+var postFbCaro = "{% url 'fb-process-carousel' %}";
+var postFbText = "{% url 'fb-process-text' %}";
+var postIg = "{% url 'ig-process-form' %}";
+var postIgStory = "{% url 'ig-process-story' %}";
+var postIgCaro = "{% url 'ig-process-carousel' %}";
+'''

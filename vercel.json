@@ -9,7 +9,7 @@
         }
       },
       {
-        "src": "meta/*.py",
+        "src": "meta/server_func.py",
         "use": "@vercel/python",
         "config": {
           "maxLambdaSize": "15mb",

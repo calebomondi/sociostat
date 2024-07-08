@@ -37,7 +37,30 @@ def postInsights(email):
     post_insights_url = f'https://graph.facebook.com/{ig_user_id}/insights?metric={metrics}&period=day&metric_type=total_value&access_token={igAT}'
     insights = requests.get(post_insights_url).json()
     return insights
+        
+def dayInsights(email):
+    print('dayInsights')
+    insights = postInsights(email)
 
+    for dat in insights['data']:
+        if dat['name'] == 'impressions':
+            impressions = dat['total_value']['value']
+        if dat['name'] == 'reach':
+            reach = dat['total_value']['value']
+        if dat['name'] == 'profile_views':
+            pviews = dat['total_value']['value']
+        if dat['name'] == 'total_interactions':
+            interact = dat['total_value']['value']
+        if dat['name'] == 'likes':
+            likes = dat['total_value']['value']
+        if dat['name'] == 'comments':
+            comments = dat['total_value']['value']
+        if dat['name'] == 'shares':
+            shares = dat['total_value']['value']
+        if dat['name'] == 'saves':
+            saves = dat['total_value']['value']
+    return {'impressions':impressions,'reach':reach,'pviews':pviews,'interact':interact,'likes':likes,'comments':comments,'shares':shares,'saves':saves}
+'''
 def totalCLS(email):
     print(f'totalCLS')
     user = UsrCredentials.objects.get(email=email)
@@ -69,29 +92,6 @@ def totalCLS(email):
         comments += post_comments
         shares += post_shares
     return {'likes': likes, 'comments':comments, 'shares':shares}
-        
-def dayInsights(email):
-    print('dayInsights')
-    insights = postInsights(email)
-
-    for dat in insights['data']:
-        if dat['name'] == 'impressions':
-            impressions = dat['total_value']['value']
-        if dat['name'] == 'reach':
-            reach = dat['total_value']['value']
-        if dat['name'] == 'profile_views':
-            pviews = dat['total_value']['value']
-        if dat['name'] == 'total_interactions':
-            interact = dat['total_value']['value']
-        if dat['name'] == 'likes':
-            likes = dat['total_value']['value']
-        if dat['name'] == 'comments':
-            comments = dat['total_value']['value']
-        if dat['name'] == 'shares':
-            shares = dat['total_value']['value']
-        if dat['name'] == 'saves':
-            saves = dat['total_value']['value']
-    return {'impressions':impressions,'reach':reach,'pviews':pviews,'interact':interact,'likes':likes,'comments':comments,'shares':shares,'saves':saves}
 
 def most(email):
     print('MOST')
@@ -278,7 +278,6 @@ def makeStory(imgUrl,email):
     print(f'AM IN!! {encoded_url}')
     #get container id
     url = f'https://graph.facebook.com/{ig_user_id}/media?media_type=STORIES&image_url={encoded_url}&access_token={igAT}'
-    '''
     response = requests.post(
         f'https://graph.facebook.com/{config.ig_user_id}/media',
         data={
@@ -287,7 +286,6 @@ def makeStory(imgUrl,email):
             'access_token': config.igAT,
         }
     )
-    '''
     container_id = requests.post(url).json().get('id')
     print(f'Story: {container_id}')
     #publish
@@ -419,7 +417,7 @@ def getPostsDataTrends(email):
     final['reach2'] = reach[10:][::-1]
     
     return final
-
+'''
 def trendData(fromApi):
     data = totalTrend(fromApi)
     print(f'DATA SUMMATION: {data}')

@@ -1,11 +1,9 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse,JsonResponse
 from django.template import loader
-from . import ig_func
-from . import fb_func
+from . import ig_func, fb_func, gen_func, server_func
 from .forms import myForm,formSet,storyForm,FileCaro, CreateUserForm,LoginForm, FBText
 from .models import UsrCredentials,Followers
-from . import gen_func
 #------
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -31,7 +29,7 @@ def welcome(request):
     else:
         email = "Guest"
     #--
-    request.session['final'] = ig_func.getPostsDataTrends(email)
+    request.session['final'] = server_func.getPostsDataTrends(email)
     return HttpResponse(template.render())
 
 #authenticate
@@ -99,8 +97,8 @@ def facebook_dashboard(request):
     else:
         email = "Guest"
     #--
-    request.session['finalFb'] = fb_func.trendsCompilerFb(email)
-    most = fb_func.most(email)
+    request.session['finalFb'] = server_func.trendsCompilerFb(email)
+    most = server_func.most(email)
     last = fb_func.last24hrs(email)
     context = {
         'recent': most['final']['recent'],
@@ -119,12 +117,12 @@ def facebook_view(request):
         email = request.user.email
     else:
         email = "Guest"
-    viewData = fb_func.viewCompiler(email)
+    viewData = server_func.viewCompiler(email)
     context = {
         'posts': viewData,
     }
     return HttpResponse(template.render(context,request))
-
+'''
 @login_required(login_url='login')
 def facebook_post(request):
     form = myForm()
@@ -209,7 +207,7 @@ def face_make_text(request):
             return JsonResponse({'message': 'Post Not Successful'}, status=400)
         
     return JsonResponse({'message': 'Method Not Post'}, status=405)
-
+'''
 #INSTAGRAM
 @login_required(login_url='login')
 def instagram_dashboard(request):
@@ -222,9 +220,8 @@ def instagram_dashboard(request):
         email = "Guest"
     #--
     info = ig_func.pageInfo(email)
-    CLS = ig_func.totalCLS(email)
-    most = ig_func.most(email)
-    recent = ig_func.recentlyPosted(email)
+    CLS = server_func.totalCLS(email)
+    most = server_func.mostIg(email)
     daily_ins = ig_func.dayInsights(email)
     context = {
         'followers':info['followers_count'],
@@ -244,7 +241,7 @@ def instagram_dashboard(request):
         'most_liked':most['liked'],
         'most_shared':most['shared'],
         'most_comments':most['commented'],
-        'recent':recent,
+        'recent':most['recent'],
     }
     return HttpResponse(template.render(context,request))
 
@@ -255,12 +252,12 @@ def insta_views(request):
         email = request.user.email
     else:
         email = "Guest"
-    data = ig_func.compilePosts(email)
+    data = server_func.compilePosts(email)
     context = {
         'posts': data
     }
     return HttpResponse(template.render(context,request))
-
+'''
 @login_required(login_url='login')
 def insta_post(request):
     form = myForm()
@@ -351,61 +348,6 @@ def insta_make_story(request):
         #return HttpResponse(f'{file} - {caption}')
     return JsonResponse({'message': 'Method Not Post'}, status=405)
 
-#SETUP
-@login_required(login_url='login')
-def setup(request):
-    form = formSet()
-    template = loader.get_template('setup.html')
-    context = {
-        'form':form
-    }
-    return HttpResponse(template.render(context,request))
-
-def setup_process(request):
-    if request.method == 'POST':
-        form = formSet(request.POST)
-        if form.is_valid():
-            #get form inputs
-            email = form.cleaned_data['email'] 
-            slToken = form.cleaned_data['slToken']
-            fbPgId = form.cleaned_data['fbPgId']
-            appId = form.cleaned_data['appId']
-            appSecret = form.cleaned_data['appSecret']
-            #get LLTKN and PGTKN
-            res = gen_func.genLLAT_PAT(appId,appSecret,slToken,fbPgId)
-
-            if res['access_token']:
-                print('Am In Setup!')
-                usr, created = UsrCredentials.objects.update_or_create(
-                    email=email,
-                    defaults = {
-                        'email':email,
-                        'llat':res['access_token'],
-                        'pgat':res['page_token'],
-                        'iguserid':res['ig_user'],
-                        'fbpageid':fbPgId,
-                        'appid':appId,
-                        'appsecret':appSecret
-                    }
-                )
-                fllwrs, createdF = Followers.objects.update_or_create(
-                    email=email,
-                    defaults = {
-                        'email':email,
-                        'igfollowers':0,
-                        'fbfollowers':0,
-                    }
-                )
-                #usr = UsrCredentials(usrname=usrname,llAT=res['access_token'],pgAT=res['page_token'],igUserId=igUsrId,fbPageId=fbPgId,appID=appId,appSecret=appSecret)
-                #usr.save()
-                if usr and fllwrs:
-                    print(f'usr: {usr} - fllwrs: {fllwrs}')
-                    return JsonResponse({'message': 'Data Processing Completed!'})
-                else:
-                    return JsonResponse({'message': 'Data Processing Not Successful'}, status=400)
-            
-    return JsonResponse({'message': 'Method Not Post'}, status=405)
-
 #ALL
 @login_required(login_url='login')
 def postAll(request):
@@ -464,6 +406,62 @@ def all_make_carousel(request):
                 return JsonResponse({'message': 'Posting Carousel To All Socials Completed'})
             else:
                 return JsonResponse({'message': 'Post Not Successful'}, status=400)
+    return JsonResponse({'message': 'Method Not Post'}, status=405)
+'''
+
+#SETUP
+@login_required(login_url='login')
+def setup(request):
+    form = formSet()
+    template = loader.get_template('setup.html')
+    context = {
+        'form':form
+    }
+    return HttpResponse(template.render(context,request))
+
+def setup_process(request):
+    if request.method == 'POST':
+        form = formSet(request.POST)
+        if form.is_valid():
+            #get form inputs
+            email = form.cleaned_data['email'] 
+            slToken = form.cleaned_data['slToken']
+            fbPgId = form.cleaned_data['fbPgId']
+            appId = form.cleaned_data['appId']
+            appSecret = form.cleaned_data['appSecret']
+            #get LLTKN and PGTKN
+            res = gen_func.genLLAT_PAT(appId,appSecret,slToken,fbPgId)
+
+            if res['access_token']:
+                print('Am In Setup!')
+                usr, created = UsrCredentials.objects.update_or_create(
+                    email=email,
+                    defaults = {
+                        'email':email,
+                        'llat':res['access_token'],
+                        'pgat':res['page_token'],
+                        'iguserid':res['ig_user'],
+                        'fbpageid':fbPgId,
+                        'appid':appId,
+                        'appsecret':appSecret
+                    }
+                )
+                fllwrs, createdF = Followers.objects.update_or_create(
+                    email=email,
+                    defaults = {
+                        'email':email,
+                        'igfollowers':0,
+                        'fbfollowers':0,
+                    }
+                )
+                #usr = UsrCredentials(usrname=usrname,llAT=res['access_token'],pgAT=res['page_token'],igUserId=igUsrId,fbPageId=fbPgId,appID=appId,appSecret=appSecret)
+                #usr.save()
+                if usr and fllwrs:
+                    print(f'usr: {usr} - fllwrs: {fllwrs}')
+                    return JsonResponse({'message': 'Data Processing Completed!'})
+                else:
+                    return JsonResponse({'message': 'Data Processing Not Successful'}, status=400)
+            
     return JsonResponse({'message': 'Method Not Post'}, status=405)
 
 #CHARTS

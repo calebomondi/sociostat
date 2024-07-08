@@ -1,10 +1,9 @@
 import requests
-from . import config
 import facebook as fb
 import urllib.parse
 import json
 from .models import UsrCredentials, Followers
-
+'''
 def allPostsView(email):
     print('INSIDE allPostsView!')
     #--
@@ -179,7 +178,7 @@ def most(email):
     final['recent'] = recent
     dash = dashData(data,email)
     return {'final': final, 'dash':dash}
-
+'''
 def last24hrs(email):
     user = UsrCredentials.objects.get(email=email)
     page_AT = user.pgat
@@ -243,6 +242,7 @@ def followersFB(email):
     followers.save()
     return {'current':current,'past':past,'change':change}
 
+'''
 def multiFileHandlers(files,caption,email):
     user = UsrCredentials.objects.get(email=email)
     page_id = user.fbpageid
@@ -396,3 +396,4 @@ def postText(mssg,email):
     output = requests.post(url).json()
     
     return output['id']
+'''

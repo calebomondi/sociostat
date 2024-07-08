@@ -164,10 +164,12 @@ def trendsCompilerFb(email):
             dat2.append(res2)
     #--
     size = len(dat1)
+    i = 0
     while i < size:
         likes.append(dat1[i]['likes']['summary']['total_count'])
         comments.append(dat1[i]['comments']['summary']['total_count'])
         reach.append(dat2[i]['data'][0]['values'][0]['value'])
+        i += 1
    
     final['likes1'] = likes[:10][::-1]
     final['comments1'] = comments[:10][::-1]

@@ -711,7 +711,7 @@ def compare_trends_ig(request):
     #--
     if not finalFb:
         print('FinalFb not found!')
-        request.session['finalFb'] = fb_func.trendsCompilerFb(email)
+        request.session['finalFb'] = server_func.trendsCompilerFb(email)
         finalFb = request.session.get('finalFb',{})
     #--
     fb = ig_func.trendData(finalFb)

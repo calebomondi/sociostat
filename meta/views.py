@@ -21,11 +21,6 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 
-#---
-final = {}
-finalFb = {}
-info = {}
-
 # Create your views here.
 @login_required(login_url='login')
 def welcome(request):
@@ -36,12 +31,7 @@ def welcome(request):
     else:
         email = "Guest"
     #--
-    global final,finalFb
-    if final:
-        final = {}
-        finalFb = {}
-    #--
-    final = ig_func.getPostsDataTrends(email)
+    request.session['final'] = ig_func.getPostsDataTrends(email)
     return HttpResponse(template.render())
 
 #authenticate
@@ -109,12 +99,7 @@ def facebook_dashboard(request):
     else:
         email = "Guest"
     #--
-    global finalFb
-    if finalFb:
-        finalFb = {}
-    #--
-    fb_func.allPostsView(email)
-    finalFb = fb_func.trendsCompilerFb()
+    request.session['finalFb'] = fb_func.trendsCompilerFb(email)
     most = fb_func.most(email)
     last = fb_func.last24hrs(email)
     context = {
@@ -134,7 +119,7 @@ def facebook_view(request):
         email = request.user.email
     else:
         email = "Guest"
-    viewData = fb_func.viewCompiler()
+    viewData = fb_func.viewCompiler(email)
     context = {
         'posts': viewData,
     }
@@ -484,6 +469,11 @@ def all_make_carousel(request):
 #CHARTS
 class LineChartDataIg(APIView):
     def get(self, request, format=None):
+        final = request.session.get('final',{})
+
+        if not final:
+            return Response({"error": "No data found in session"}, status=status.HTTP_404_NOT_FOUND)
+        
         data = {
             "labels": ['p10','p9','p8','p7','p6','p5','p4','p3','p2','p1'],
             "datasets": [
@@ -530,7 +520,6 @@ class LineChartDataIg(APIView):
             ],
         }
         responce = [data,data2]
-        print('AM IN!!!!!!!!!!')
         return Response(responce, status=status.HTTP_200_OK)
 
 @login_required(login_url='login')
@@ -542,9 +531,7 @@ def insta_trends(request):
     else:
         email = "Guest"
     #---
-    global final
-    #---
-    trnds = ig_func.trendData(final)
+    trnds = ig_func.trendData(request.session.get('final',{}))
     flwrs = ig_func.followersIG(email)
     context = {
         'data': trnds,
@@ -554,6 +541,11 @@ def insta_trends(request):
 
 class LineChartDataFb(APIView):
     def get(self, request, format=None):
+        finalFb = request.session.get('finalFb',{})
+
+        if not finalFb:
+            return Response({"error": "No data found in session"}, status=status.HTTP_404_NOT_FOUND)
+        
         data3 = {
             "labels": ['p10','p9','p8','p7','p6','p5','p4','p3','p2','p1'],
             "datasets": [
@@ -612,7 +604,7 @@ def facebook_trends(request):
     else:
         email = "Guest"
     #---
-    global finalFb
+    finalFb = request.session.get('finalFb',{})
     #--
     trnds = ig_func.trendData(finalFb)
     flwrs = fb_func.followersFB(email)
@@ -623,9 +615,11 @@ def facebook_trends(request):
     return HttpResponse(template.render(context,request))
 
 #COMPARISON Fb & IG
-
 class LineChartDataComp(APIView):
     def get(self, request, format=None):
+        final = request.session.get('final',{})
+        finalFb = request.session.get('finalFb',{})
+
         data5 = {
             "labels": ['p10','p9','p8','p7','p6','p5','p4','p3','p2','p1'],
             "datasets": [
@@ -679,7 +673,6 @@ class LineChartDataComp(APIView):
             ],
         }
         responce = [data5,data6]
-        print('AM IN COMPARE!!!!!!!!!!')
         return Response(responce, status=status.HTTP_200_OK)
 
 @login_required(login_url='login')
@@ -691,7 +684,8 @@ def compare_trends_fb(request):
     else:
         email = "Guest"
     #--
-    global final, finalFb
+    final = request.session.get('final',{})
+    finalFb = request.session.get('finalFb',{})
     #--
     fb = ig_func.trendData(finalFb)
     fbFol = fb_func.followersFB(email)
@@ -714,12 +708,13 @@ def compare_trends_ig(request):
     else:
         email = "Guest"
     #--
-    global final, finalFb
-    if finalFb:
-        pass
-    else:
-        fb_func.chartsLoader(email)
-        finalFb = fb_func.trendsCompilerFb()
+    final = request.session.get('final',{})
+    finalFb = request.session.get('finalFb',{})
+    #--
+    if not finalFb:
+        print('FinalFb not found!')
+        request.session['finalFb'] = fb_func.trendsCompilerFb(email)
+        finalFb = request.session.get('finalFb',{})
     #--
     fb = ig_func.trendData(finalFb)
     fbFol = fb_func.followersFB(email)

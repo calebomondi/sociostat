@@ -5,11 +5,6 @@ import urllib.parse
 import json
 from .models import UsrCredentials, Followers
 
-likesComms = []
-reach = []
-info1 = []
-info2 = []
-
 def allPostsView(email):
     print('INSIDE allPostsView!')
     #--
@@ -17,36 +12,27 @@ def allPostsView(email):
     page_AT = user.pgat
     page_id = user.fbpageid
     #--
-    global likesComms,reach,info1,info2
-    if likesComms != []:
-        print('Global Not Empty!')
-        likesComms = []
-        reach = []
-        info1 = []
-        info2 = []
+    info1 = []
+    info2 = []
     #--
     fields = 'attachments,created_time,permalink_url,full_picture,likes.summary(true),comments.summary(true),shares.summary(true)'
     #get post IDs
-    url = f'https://graph.facebook.com/v19.0/{page_id}/posts?access_token={page_AT}&limit=20'
+    url = f'https://graph.facebook.com/v19.0/{page_id}/posts?access_token={page_AT}&limit=10'
     res = requests.get(url).json()
     if res:
-        i = 0
+        i = 1
         for dat in res['data']:
-            url1 = f'https://graph.facebook.com/v19.0/{dat['id']}?fields=likes.summary(true),comments.summary(true)&access_token={page_AT}'
+            print(i)
+            #get post info
+            url1 = f'https://graph.facebook.com/v19.0/{dat['id']}?fields={fields}&access_token={page_AT}'
             res1 = requests.get(url1).json()
-            likesComms.append(res1)
+            info1.append(res1)
             url2 = f'https://graph.facebook.com/v19.0/{dat['id']}/insights?metric=post_impressions_unique&access_token={page_AT}'
             res2 = requests.get(url2).json()
-            reach.append(res2)
-            if i < 10:
-                #get post info
-                url1 = f'https://graph.facebook.com/v19.0/{dat['id']}?fields={fields}&access_token={page_AT}'
-                res1 = requests.get(url1).json()
-                info1.append(res1)
-                url2 = f'https://graph.facebook.com/v19.0/{dat['id']}/insights?metric=post_impressions_unique&access_token={page_AT}'
-                res2 = requests.get(url2).json()
-                info2.append(res2)
+            info2.append(res2)
             i += 1
+    
+    return info1, info2
 
 def chartsLoader(email):
     print('INSIDE chartsLoader!')
@@ -55,28 +41,29 @@ def chartsLoader(email):
     page_AT = user.pgat
     page_id = user.fbpageid
     #--
-    global likesComms,reach
-    if likesComms:
-        likesComms = []
-        reach = []
+    likesComms = []
+    reach = []
     #--
     url = f'https://graph.facebook.com/v19.0/{page_id}/posts?access_token={page_AT}&limit=20'
     res = requests.get(url).json()
     if res:
+        i = 1
         for dat in res['data']:
+            print(f'{i}')
             url1 = f'https://graph.facebook.com/v19.0/{dat['id']}?fields=likes.summary(true),comments.summary(true)&access_token={page_AT}'
             res1 = requests.get(url1).json()
             likesComms.append(res1)
             url2 = f'https://graph.facebook.com/v19.0/{dat['id']}/insights?metric=post_impressions_unique&access_token={page_AT}'
             res2 = requests.get(url2).json()
             reach.append(res2)
+            i += 1
+    
+    return likesComms, reach
 
-def viewCompiler():
+def viewCompiler(email):
     print('ViewCompiler')
-    global info1, info2
+    dat1, dat2 = allPostsView(email)
     cData = []
-    dat1 = info1
-    dat2 = info2
     size = len(dat1)
     print(f'VIEW COMPILER FB: {size}')
     i = 0
@@ -171,7 +158,7 @@ def most(email):
     #return
     final = {}
     #get LCS
-    data = viewCompiler()
+    data = viewCompiler(email)
     print('MOST')
     for dat in data:
         comments.append(dat['comments'])
@@ -212,17 +199,15 @@ def last24hrs(email):
     return {'pgImpress':pgImpress,'pgImpressPaid':pgImpressPaid,'pgImpressOrg':pgImpressOrg,'poImpress':poImpress,'contClicks':contClicks,'ctaCont':ctaCont,'dailyFol':dailyFol}
 
 #chart
-def trendsCompilerFb():
-    global likesComms, reach
-    dat1 = likesComms
-    dat2 = reach
+def trendsCompilerFb(email):
+    dat1, dat2 = chartsLoader(email)
+    print('Trends Compiler!')
     final = {}
     likes = []
     reach = []
     comments = []
     size = len(dat1)
-    print(f'size trnds FB: {size}')
-    
+
     i = 0
     while i < size:
         likes.append(dat1[i]['likes']['summary']['total_count'])

@@ -4,9 +4,19 @@ import facebook as fb
 import urllib.parse
 from .models import UsrCredentials, Followers
 
-mediaIDS = []
+#mediaIDS = []
 
 #DASHBOARD
+def mediaIDs(email):
+    user = UsrCredentials.objects.get(email=email)
+    igAT = user.llat
+    ig_user_id = user.iguserid
+    #get media objects
+    url = f'https://graph.facebook.com/v19.0/{ig_user_id}/media?access_token={igAT}&limit=20'
+    response = requests.get(url).json()
+    if 'data' in response:
+        return response['data']
+
 def pageInfo(email):
     print('Inside PageInfo')
     user = UsrCredentials.objects.get(email=email)
@@ -34,8 +44,7 @@ def totalCLS(email):
     igAT = user.llat
     #ig_user_id = user.iguserid
     #---
-    global mediaIDS
-    print(f'mediaIDS: {mediaIDS}')
+    mediaIDS = mediaIDs(email)
     #---
     metrics = 'likes, comments, shares'
     likes = 0
@@ -62,6 +71,7 @@ def totalCLS(email):
     return {'likes': likes, 'comments':comments, 'shares':shares}
         
 def dayInsights(email):
+    print('dayInsights')
     insights = postInsights(email)
 
     for dat in insights['data']:
@@ -89,7 +99,7 @@ def most(email):
     igAT = user.llat
     ig_user_id = user.iguserid
     #--
-    global mediaIDS
+    mediaIDS = mediaIDs(email)
     #Arrays
     Likes = []
     Shares = []
@@ -155,10 +165,9 @@ def recentlyPosted(email):
     igAT = user.llat
     ig_user_id = user.iguserid
     #--
-    global mediaIDS
-    #--
-    print(mediaIDS)
+    mediaIDS = mediaIDs(email)
     recent = mediaIDS[0]['id']
+    print(recent)
     #get likes,shares,comments
     media_info = getObject(recent,igAT)
     for dat in media_info['data']:
@@ -188,7 +197,7 @@ def getPostsData(email):
     igAT = user.llat
     ig_user_id = user.iguserid
     #---
-    global mediaIDS
+    mediaIDS = mediaIDs(email)
     #---
     metrics = 'likes,comments, shares,reach,video_views'
     fields = 'permalink,media_url,timestamp,thumbnail_url'
@@ -383,42 +392,31 @@ def getPostsDataTrends(email):
     igAT = user.llat
     ig_user_id = user.iguserid
     #---
-    global mediaIDS
-    if mediaIDS != []:
-        mediaIDS = []
-    #---
     metrics = 'likes,comments,reach'
     final = {}
     likes = []
     reach = []
     comments = []
     #get media objects
-    url = f'https://graph.facebook.com/v19.0/{ig_user_id}/media?access_token={igAT}&limit=20'
-    response = requests.get(url).json()
-    if 'data' in response:
-        mediaObjArr = response['data']
-        mediaIDS = response['data']
-        print(f'mediaIDS: {mediaIDS}')
-        print(f'size trnds IG: {len(mediaObjArr)}')
-        #get single post metrics
-        i = 0
-        for mediaObj in mediaObjArr:
-            #media insites
-            url_media = f'https://graph.facebook.com/{mediaObj['id']}/insights?metric={metrics}&access_token={igAT}'
-            media_info = requests.get(url_media).json()
-            likes.append(media_info['data'][0]['values'][0]['value'])
-            comments.append(media_info['data'][1]['values'][0]['value'])
-            reach.append(media_info['data'][2]['values'][0]['value'])
-            i +=1 
-        
-        final['likes1'] = likes[:10][::-1]
-        final['comments1'] = comments[:10][::-1]
-        final['reach1'] = reach[:10][::-1]
-        final['likes2'] = likes[10:][::-1]
-        final['comments2'] = comments[10:][::-1]
-        final['reach2'] = reach[10:][::-1]
-    else:
-        print('NO DATA IG!')
+    mediaObjArr = mediaIDs(email)
+    print(f'size trnds IG: {len(mediaObjArr)}')
+    #get single post metrics
+    i = 0
+    for mediaObj in mediaObjArr:
+        #media insites
+        url_media = f'https://graph.facebook.com/{mediaObj['id']}/insights?metric={metrics}&access_token={igAT}'
+        media_info = requests.get(url_media).json()
+        likes.append(media_info['data'][0]['values'][0]['value'])
+        comments.append(media_info['data'][1]['values'][0]['value'])
+        reach.append(media_info['data'][2]['values'][0]['value'])
+        i +=1 
+    
+    final['likes1'] = likes[:10][::-1]
+    final['comments1'] = comments[:10][::-1]
+    final['reach1'] = reach[:10][::-1]
+    final['likes2'] = likes[10:][::-1]
+    final['comments2'] = comments[10:][::-1]
+    final['reach2'] = reach[10:][::-1]
     
     return final
 

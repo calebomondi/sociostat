@@ -21,9 +21,7 @@ def viewCompiler(email):
     url = f'https://graph.facebook.com/v19.0/{page_id}/posts?access_token={page_AT}&limit=10'
     res = requests.get(url).json()
     if res:
-        i = 1
         for dat in res['data']:
-            print(i)
             #get post info
             url1 = f'https://graph.facebook.com/v19.0/{dat['id']}?fields={fields}&access_token={page_AT}'
             res1 = requests.get(url1).json()
@@ -31,7 +29,6 @@ def viewCompiler(email):
             url2 = f'https://graph.facebook.com/v19.0/{dat['id']}/insights?metric=post_impressions_unique&access_token={page_AT}'
             res2 = requests.get(url2).json()
             dat2.append(res2)
-            i += 1
     #----------------
     size = len(dat1)
     print(f'VIEW COMPILER FB: {size}')
@@ -158,7 +155,6 @@ def trendsCompilerFb(email):
     url = f'https://graph.facebook.com/v19.0/{page_id}/posts?access_token={page_AT}&limit=20'
     res = requests.get(url).json()
     if res:
-        i = 1
         for dat in res['data']:
             print(f'{i}')
             url1 = f'https://graph.facebook.com/v19.0/{dat['id']}?fields=likes.summary(true),comments.summary(true)&access_token={page_AT}'
@@ -167,16 +163,12 @@ def trendsCompilerFb(email):
             url2 = f'https://graph.facebook.com/v19.0/{dat['id']}/insights?metric=post_impressions_unique&access_token={page_AT}'
             res2 = requests.get(url2).json()
             dat2.append(res2)
-            i += 1
     #--
     size = len(dat1)
-
-    i = 0
     while i < size:
         likes.append(dat1[i]['likes']['summary']['total_count'])
         comments.append(dat1[i]['comments']['summary']['total_count'])
         reach.append(dat2[i]['data'][0]['values'][0]['value'])
-        i += 1
    
     final['likes1'] = likes[:10][::-1]
     final['comments1'] = comments[:10][::-1]

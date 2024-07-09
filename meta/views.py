@@ -119,7 +119,6 @@ def facebook_view(request):
         email = request.user.email
     else:
         email = "Guest"
-    request.session['finalFb'] = server_func.trendsCompilerFb(email)
     viewData = server_func.viewCompiler(email)
     context = {
         'posts': viewData,
@@ -685,6 +684,7 @@ def compare_trends_fb(request):
     else:
         email = "Guest"
     #--
+    request.session['finalFb'] = server_func.trendsCompilerFb(email)
     final = request.session.get('final',{})
     finalFb = request.session.get('finalFb',{})
     #--

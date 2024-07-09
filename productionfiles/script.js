@@ -202,37 +202,43 @@ function fbDash(id) {
     var fb = document.getElementById('fbSite');
     var ig = document.getElementById('igSite');
     var set = document.getElementById('setSite');
-    
+    var all = document.getElementById('allSite');
 
     if(id == 0) {
         //FB
         ig.style.borderLeft = 'none';
         set.style.borderLeft = 'none';
-        
+        all.style.borderLeft = 'none';
         fb.style.borderLeft = '3px solid var(--white)';
     } else if (id == 1){
         //IG
         ig.style.borderLeft = '3px solid var(--white)';
         fb.style.borderLeft = 'none';
         set.style.borderLeft = 'none';
-        
+        all.style.borderLeft = 'none';
     } else if (id == 2){
         //SET
         set.style.borderLeft = '3px solid var(--white)';
         fb.style.borderLeft = 'none';
         ig.style.borderLeft = 'none';
-        
-    }else {
+        all.style.borderLeft = 'none';
+    } else if (id == 3){
+        //All
+        set.style.borderLeft = 'none';
+        fb.style.borderLeft = 'none';
+        ig.style.borderLeft = 'none';
+        all.style.borderLeft = '3px solid var(--white)';
+    } else {
         fb.style.borderLeft = 'none';
         ig.style.borderLeft = 'none';
         set.style.borderLeft = 'none';
-        
+        all.style.borderLeft = 'none';
     }
 }
 document.getElementById('fbDash').addEventListener('click', () => {fbDash(0)});
 document.getElementById('igDash').addEventListener('click', () => {fbDash(1)});
 document.getElementById('setDash').addEventListener('click', () => {fbDash(2)});
-
+document.getElementById('allDash').addEventListener('click', () => {fbDash(3)});
 
 function getPath() {
     var currentPath = window.location.pathname;
@@ -243,30 +249,39 @@ function getPath() {
         fbDash(1);
     else if(pathSegments[1] == 'setup')
         fbDash(2);
+    else if(pathSegments[1] == 'all')
+        fbDash(3);
     else
         fbDash(4)
 
     var dashB = document.getElementById('dashB');
     var viewB = document.getElementById('viewB');
+    var postB = document.getElementById('postB');
     var trendB = document.getElementById('trendB');
     var compB = document.getElementById('compB');
     console.log(pathSegments[2])
     if (pathSegments[2] == 'dashboard'){
         viewB.style.borderBottom = 'none';
+        postB.style.borderBottom = 'none';
         trendB.style.borderBottom = 'none';
         compB.style.borderBottom = 'none';
     }
     else if(pathSegments[2] == 'views') {
         dashB.style.borderBottom = 'none';
-        
+        postB.style.borderBottom = 'none';
         trendB.style.borderBottom = 'none';
         compB.style.borderBottom = 'none';
     }
-    
+    else if(pathSegments[1] != 'all' && pathSegments[2] == 'post') {
+        dashB.style.borderBottom = 'none';
+        viewB.style.borderBottom = 'none';
+        trendB.style.borderBottom = 'none';
+        compB.style.borderBottom = 'none';
+    }
     else if(pathSegments[2] == 'trends') {
         dashB.style.borderBottom = 'none';
         viewB.style.borderBottom = 'none';
-        
+        postB.style.borderBottom = 'none';
         compB.style.borderBottom = 'none';
         if (pathSegments[1] == 'facebook')
             loadgraphFb();
@@ -277,10 +292,20 @@ function getPath() {
     else if(pathSegments[2] == 'comparison') {
         dashB.style.borderBottom = 'none';
         viewB.style.borderBottom = 'none';
+        postB.style.borderBottom = 'none';
         trendB.style.borderBottom = 'none';
         loadgraphComp();
     }
-    
+
+    if(pathSegments[3] == 'carousel')
+        document.getElementById('caro').style.backgroundColor = 'seagreen';
+    else if(pathSegments[3] == 'story')
+        document.getElementById('story').style.backgroundColor = 'seagreen';
+    else if(pathSegments[3] == 'text')
+        document.getElementById('text').style.backgroundColor = 'seagreen';
+    else 
+        document.getElementById('singPost').style.backgroundColor = 'seagreen';
+
 }
 //onload
 getPath()

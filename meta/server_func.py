@@ -145,8 +145,8 @@ def trendsCompilerFb(email):
     page_AT = user.pgat
     page_id = user.fbpageid
     #--
-    dat1 = []
-    dat2 = []
+    #dat1 = []
+    #dat2 = []
     final = {}
     likes = []
     reach = []
@@ -158,11 +158,16 @@ def trendsCompilerFb(email):
         for dat in res['data']:
             url1 = f'https://graph.facebook.com/v19.0/{dat['id']}?fields=likes.summary(true),comments.summary(true)&access_token={page_AT}'
             res1 = requests.get(url1).json()
-            dat1.append(res1)
+            #dat1.append(res1)
             url2 = f'https://graph.facebook.com/v19.0/{dat['id']}/insights?metric=post_impressions_unique&access_token={page_AT}'
             res2 = requests.get(url2).json()
-            dat2.append(res2)
+            #dat2.append(res2)
+            #append LCR
+            likes.append(res1['likes']['summary']['total_count'])
+            comments.append(res1['comments']['summary']['total_count'])
+            reach.append(res2['data'][0]['values'][0]['value'])
     #--
+    '''
     size = len(dat1)
     i = 0
     while i < size:
@@ -170,6 +175,8 @@ def trendsCompilerFb(email):
         comments.append(dat1[i]['comments']['summary']['total_count'])
         reach.append(dat2[i]['data'][0]['values'][0]['value'])
         i += 1
+    '''
+    #--
    
     final['likes1'] = likes[:10][::-1]
     final['comments1'] = comments[:10][::-1]

@@ -97,7 +97,9 @@ def facebook_dashboard(request):
     else:
         email = "Guest"
     #--
-    request.session['finalFb'] = server_func.trendsCompilerFb(email)
+    #finalFb = request.session.get('finalFb',{})
+    #if not finalFb:
+    #    request.session['finalFb'] = server_func.trendsCompilerFb(email)
     most = server_func.most(email)
     last = fb_func.last24hrs(email)
     context = {
@@ -117,6 +119,7 @@ def facebook_view(request):
         email = request.user.email
     else:
         email = "Guest"
+    request.session['finalFb'] = server_func.trendsCompilerFb(email)
     viewData = server_func.viewCompiler(email)
     context = {
         'posts': viewData,

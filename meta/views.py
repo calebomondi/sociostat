@@ -410,6 +410,41 @@ def all_make_carousel(request):
                 return JsonResponse({'message': 'Post Not Successful'}, status=400)
     return JsonResponse({'message': 'Method Not Post'}, status=405)
 '''
+@login_required(login_url='login')
+def facebook_post(request):
+    template = loader.get_template('soon_fb.html')
+    if request.user.is_authenticated:
+        email = request.user.email
+    else:
+        email = "Guest"
+    context = {
+        'username': request.user.username
+    }
+    return HttpResponse(template.render(context,request))
+
+@login_required(login_url='login')
+def insta_post(request):
+    template = loader.get_template('soon.html')
+    if request.user.is_authenticated:
+        email = request.user.email
+    else:
+        email = "Guest"
+    context = {
+        'username': request.user.username
+    }
+    return HttpResponse(template.render(context,request))
+
+@login_required(login_url='login')
+def postAll(request):
+    template = loader.get_template('soon_all.html')
+    if request.user.is_authenticated:
+        email = request.user.email
+    else:
+        email = "Guest"
+    context = {
+        'username': request.user.username
+    }
+    return HttpResponse(template.render(context,request))
 
 #SETUP
 @login_required(login_url='login')

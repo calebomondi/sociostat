@@ -94,3 +94,13 @@ button:hover {
 #story, #caro, #singPost, #text {
     background-color: var(--primary);
 }
+.soon {
+    font-family: var(--ubu);
+    font-size: 45px;
+    font-weight: 300;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    color: var(--primary);
+}

@@ -1,30 +1,39 @@
-{% extends 'master.html' %}
-
-{% block title%}
-    Setup
-{% endblock %}
-
-{% block content%}
-<div class="topbar">
-    <div class="usr"></div>
-    <div class="usr">
-        {% if user.is_authenticated %}
-            <span class="usrname">{{ user.username }}</span>
-        {% else %}
-            <span class="usrname">guest</span>
-        {% endif %}
-        <span class="material-symbols-outlined">face</span>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SETUP</title>
+    <!--styles-->
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'ig.css' %}">
+    <link rel="stylesheet" href="{% static 'ig_post.css' %}">
+    <link rel="stylesheet" href="{% static 'ig_view.css' %}">
+    <link rel="stylesheet" href="{% static 'setup.css' %}">
+    <!--scripts-->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="ig-make-post">
+        <div class="heading">
+            Enter you meta credentials
+        </div>
+        <form method="post" id="postFormSet">
+            {% csrf_token %}
+            {{form}}
+            <button type="submit" id="submitBtn" onclick="showHidden()">submit</button>
+        </form>
+        <div id="message">Processing ...</div>
+        <div id="hmpg">
+            If successful go to <a href="{% url 'home-page' %}">Home Page</a> 
+        </div>
     </div>
-</div>
-<div class="ig-make-post">
-    <form method="post" id="postFormSet">
-        {% csrf_token %}
-        {{form}}
-        <button type="submit" id="submitBtn" onclick="showHidden()">submit</button>
-    </form>
-    <div id="message">Processing ...</div>
-    <div class="signin">
-        <a href="{% url 'password_change' %}">CHANGE PASSWORD INSTEAD</a>
-    </div>
-</div>
-{% endblock %}
+
+    <script src="{% static 'script.js' %}"></script>
+    <script>
+        var setupUrl = "{% url 'set-up-process' %}";
+    </script>
+</body>
+</html>

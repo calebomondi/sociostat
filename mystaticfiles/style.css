@@ -126,3 +126,11 @@ body {
 #fbSite, #igSite, #setSite, #allSite {
     border-left: 3px solid var(--white);
 }
+.heading {
+    color: green;
+    text-align: center;
+    font-family: var(--main-font);
+    font-size: 24px;
+    padding: 5px;
+    margin-bottom: 20px;
+}

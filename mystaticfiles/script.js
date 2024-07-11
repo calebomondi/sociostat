@@ -247,12 +247,13 @@ function getPath() {
         fbDash(0);
     else if(pathSegments[1] == 'instagram')
         fbDash(1);
-    else if(pathSegments[1] == 'setup')
+    else if(pathSegments[1] == 'settings')
         fbDash(2);
     else if(pathSegments[1] == 'all')
         fbDash(3);
     else
         fbDash(4)
+    console.log(pathSegments[1])
 
     var dashB = document.getElementById('dashB');
     var viewB = document.getElementById('viewB');
@@ -303,8 +304,6 @@ function getPath() {
         document.getElementById('story').style.backgroundColor = 'seagreen';
     else if(pathSegments[3] == 'text')
         document.getElementById('text').style.backgroundColor = 'seagreen';
-    else 
-        document.getElementById('singPost').style.backgroundColor = 'seagreen';
 
 }
 //onload

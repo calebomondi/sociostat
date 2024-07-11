@@ -1,0 +1,20 @@
+{% extends 'master.html' %}
+
+{% block title%}
+    Settings
+{% endblock %}
+
+{% block content%}
+<div class="topbar">
+    <div class="usr"></div>
+    <div class="usr">
+        <span class="usrname">{{ username }}</span>
+        <span class="material-symbols-outlined">face</span>
+    </div>
+</div>
+<div class="ig-make-post">
+    <div class="signin">
+        <a href="{% url 'password_change' %}">CHANGE PASSWORD</a>
+    </div>
+</div>
+{% endblock %}

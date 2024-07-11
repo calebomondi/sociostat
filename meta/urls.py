@@ -42,8 +42,11 @@ urlpatterns = [
     #path('all/show/carousel',views.all_make_carousel,name='all-process-carousel'),
 
     #set-up
-    path('setup/',views.setup,name='set-up'),
+    path('setup/',views.setup,name='setup'),
     path('setup/process',views.setup_process,name='set-up-process'),
+
+    #settings
+    path('settings/',views.settings,name='settings'),
 
     #authenticate
     path('login/',views.login,name='login'),

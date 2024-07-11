@@ -18,16 +18,3 @@ input:focus {
     flex-direction: row;
     width: 90%;
 }
-.signin {
-    position: absolute;
-    bottom: 0;
-    font-family: var(--ubu);
-    margin-bottom: 20px;
-}
-.signin a {
-    text-decoration: none;
-    color: var(--primary);
-}
-.signin a:hover {
-    color: orangered;
-}

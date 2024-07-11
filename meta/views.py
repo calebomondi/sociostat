@@ -27,9 +27,14 @@ def welcome(request):
     if request.user.is_authenticated:
         email = request.user.email
     else:
-        email = "Guest"
+        emai = "Guest"
     #--
-    request.session['final'] = server_func.getPostsDataTrends(email)
+    email_exists = UsrCredentials.objects.filter(email=email).exists()
+    if email_exists:
+        request.session['final'] = server_func.getPostsDataTrends(email)
+    else:
+        return redirect("setup")
+    #--
     return HttpResponse(template.render())
 
 #authenticate
@@ -446,6 +451,19 @@ def postAll(request):
     }
     return HttpResponse(template.render(context,request))
 
+#SETTINGS
+@login_required(login_url='login')
+def settings(request):
+    template = loader.get_template('settings.html')
+    if request.user.is_authenticated:
+        email = request.user.email
+    else:
+        email = "Guest"
+    context = {
+        'username': request.user.username
+    }
+    return HttpResponse(template.render(context,request))
+
 #SETUP
 @login_required(login_url='login')
 def setup(request):
@@ -459,6 +477,7 @@ def setup(request):
 def setup_process(request):
     if request.method == 'POST':
         form = formSet(request.POST)
+        print('SETUP-PROCESS in')
         if form.is_valid():
             #get form inputs
             email = form.cleaned_data['email'] 

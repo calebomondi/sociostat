@@ -40,7 +40,7 @@ def viewCompiler(email):
             if 'full_picture' in dat1[i]:
                 dicti['imgUrl'] = dat1[i]['full_picture']
             else:
-                dicti['imgUrl'] = 'https://scontent.cdninstagram.com/v/t51.29350-15/448631213_820384950019850_7615961932364156545_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=18de74&_nc_ohc=OCreUA8HzfYQ7kNvgGBv061&_nc_ht=scontent.cdninstagram.com&edm=AEQ6tj4EAAAA&oh=00_AYCxF94YLn5mkRnj0c2OYRV5MMwrI3dv46KSvRiOgXANjg&oe=667C7D66'
+                dicti['imgUrl'] = 'https://raw.githubusercontent.com/calebomondi/sociostat/main/mystaticfiles/images/text.png'
             dicti['postUrl'] = dat1[i]['permalink_url']
             dicti['date'] = dat1[i]['created_time'][:10]
             dicti['likes'] = dat1[i]['likes']['summary']['total_count']
@@ -358,12 +358,12 @@ def compilePosts(email):
     while i < size:
         addData = {}
         addData['date'] = links[i]['timestamp'][:10]
-        if 'media_url' in links[i]:
-            addData['imgUrl'] = links[i]['media_url']
-            addData['reel'] = 0
-        elif 'thumbnail_url' in links[i]:
+        if 'thumbnail_url' in links[i]:
             addData['imgUrl'] = links[i]['thumbnail_url']
             addData['reel'] = 1
+        else:
+            addData['imgUrl'] = links[i]['media_url']
+            addData['reel'] = 0
         addData['postUrl'] = links[i]['permalink']
         addData['views'] = data[i]['data'][0]['values'][0]['value']
         addData['likes'] = data[i]['data'][1]['values'][0]['value']

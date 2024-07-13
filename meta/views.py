@@ -417,7 +417,7 @@ def all_make_carousel(request):
 '''
 @login_required(login_url='login')
 def facebook_post(request):
-    template = loader.get_template('soon_fb.html')
+    #template = loader.get_template('soon_fb.html')
     if request.user.is_authenticated:
         email = request.user.email
     else:
@@ -426,11 +426,12 @@ def facebook_post(request):
         'username': request.user.username
     }
     request.session['finalFb'] = server_func.trendsCompilerFb(email)
-    return HttpResponse(template.render(context,request))
+    return redirect("fb-dashboard")
+    #return HttpResponse(template.render(context,request))
 
 @login_required(login_url='login')
 def insta_post(request):
-    template = loader.get_template('soon.html')
+    #template = loader.get_template('soon.html')
     if request.user.is_authenticated:
         email = request.user.email
     else:
@@ -439,7 +440,8 @@ def insta_post(request):
         'username': request.user.username
     }
     request.session['final'] = server_func.getPostsDataTrends(email)
-    return HttpResponse(template.render(context,request))
+    return redirect("ig-dashboard")
+    #return HttpResponse(template.render(context,request))
 
 @login_required(login_url='login')
 def postAll(request):

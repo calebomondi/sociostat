@@ -425,6 +425,7 @@ def facebook_post(request):
     context = {
         'username': request.user.username
     }
+    request.session['finalFb'] = server_func.trendsCompilerFb(email)
     return HttpResponse(template.render(context,request))
 
 @login_required(login_url='login')
@@ -437,6 +438,7 @@ def insta_post(request):
     context = {
         'username': request.user.username
     }
+    request.session['final'] = server_func.getPostsDataTrends(email)
     return HttpResponse(template.render(context,request))
 
 @login_required(login_url='login')
@@ -513,7 +515,7 @@ def setup_process(request):
                 #usr = UsrCredentials(usrname=usrname,llAT=res['access_token'],pgAT=res['page_token'],igUserId=igUsrId,fbPageId=fbPgId,appID=appId,appSecret=appSecret)
                 #usr.save()
                 if usr and fllwrs:
-                    print(f'usr: {usr} - fllwrs: {fllwrs}')
+                    request.session['finalFb'] = server_func.trendsCompilerFb(email)
                     return JsonResponse({'message': 'Data Processing Completed!'})
                 else:
                     return JsonResponse({'message': 'Data Processing Not Successful'}, status=400)

@@ -765,13 +765,9 @@ def compare_trends_ig(request):
     else:
         email = "Guest"
     #--
+    request.session['final'] = server_func.getPostsDataTrends(email)
     final = request.session.get('final',{})
     finalFb = request.session.get('finalFb',{})
-    #--
-    if not finalFb:
-        print('FinalFb not found!')
-        request.session['finalFb'] = server_func.trendsCompilerFb(email)
-        finalFb = request.session.get('finalFb',{})
     #--
     fb = ig_func.trendData(finalFb)
     fbFol = fb_func.followersFB(email)

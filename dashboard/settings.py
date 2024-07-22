@@ -82,10 +82,13 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-'''
 
 DATABASES = {
     'default': dj_database_url.parse('postgresql://zendawa_user:nhfZW7djCEWFyEZHsjqTc4mpuRPRiu8G@dpg-cpv6uddumphs73c6rrkg-a.oregon-postgres.render.com/zendawa'),
+}
+'''
+DATABASES = {
+    'default': dj_database_url.parse('postgresql://postgres.uryhmwgttpnqufpkvezb:mdKuV9pG0NEV7ser@aws-0-us-east-1.pooler.supabase.com:6543/postgres'),
 }
 
 # Password validation
